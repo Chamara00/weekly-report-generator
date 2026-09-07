@@ -14,9 +14,11 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('health', () => {
+    it('reports ok with a timestamp', () => {
+      const result = appController.health();
+      expect(result.status).toBe('ok');
+      expect(Date.parse(result.timestamp)).not.toBeNaN();
     });
   });
 });
