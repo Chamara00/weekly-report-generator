@@ -1,0 +1,258 @@
+// Weekly Report Hub — database schema.
+//
+// Two ideas drive the shape of this file:
+//   1. Report CONTENT is immutable once submitted. A Report row holds identity
+//      + status; every edit produces a new ReportVersion holding the content.
+//   2. A ReviewComment points at both the Report and the exact ReportVersion it
+//      was written against, so a manager always sees which text they reviewed.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Pooled connection (PgBouncer) used by the running app.
+  url       = env("DATABASE_URL")
+  // Direct connection used by `prisma migrate`, which cannot run through the pooler.
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  TEAM_MEMBER
+  MANAGER
+}
+
+/// DRAFT -> SUBMITTED -> (NEEDS_CORRECTION -> SUBMITTED)* -> APPROVED
+enum ReportStatus {
+  DRAFT
+  SUBMITTED
+  NEEDS_CORRECTION
+  APPROVED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum TaskStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+  CARRIED_OVER
+}
+
+enum TaskType {
+  DEVELOPMENT
+  TESTING
+  MEETINGS
+  DOCUMENTATION
+  OTHER
+}
+
+enum ReviewAction {
+  APPROVE
+  REQUEST_CHANGES
+}
+
+// ---------------------------------------------------------------------------
+// People and projects
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(TEAM_MEMBER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reports        Report[]
+  reviewComments ReviewComment[] @relation("ReviewCommentManager")
+  projectMembers ProjectMember[]
+
+  @@index([role])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  reports Report[]
+  members ProjectMember[]
+}
+
+/// Optional join table: which users work on which project.
+model ProjectMember {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@index([userId])
+  @@index([projectId])
+}
+
+// ---------------------------------------------------------------------------
+// Report: identity + status only. No content lives here.
+// ---------------------------------------------------------------------------
+
+model Report {
+  id            String       @id @default(cuid())
+  userId        String
+  projectId     String
+  weekStartDate DateTime     @db.Date
+  weekEndDate   DateTime     @db.Date
+  status        ReportStatus @default(DRAFT)
+
+  /// Pointer to the version that counts as the report right now.
+  currentVersionId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project        Project         @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  currentVersion ReportVersion?  @relation("CurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
+  versions       ReportVersion[] @relation("ReportVersions")
+  reviewComments ReviewComment[]
+
+  /// One report per person per week. This unique also serves as the
+  /// (userId, weekStartDate) index, so no separate @@index is needed.
+  @@unique([userId, weekStartDate])
+  @@index([projectId])
+  @@index([status])
+}
+
+/// One immutable snapshot of a report's content.
+model ReportVersion {
+  id            String    @id @default(cuid())
+  reportId      String
+  versionNumber Int
+  notes         String?
+  links         String[]  @default([])
+  /// Null while the version is still a draft; set when the member submits it.
+  submittedAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  report         Report          @relation("ReportVersions", fields: [reportId], references: [id], onDelete: Cascade)
+  currentOf      Report?         @relation("CurrentVersion")
+  tasks          Task[]
+  plannedTasks   PlannedTask[]
+  blockers       Blocker[]
+  achievements   Achievement[]
+  hoursByType    HoursByType[]
+  reviewComments ReviewComment[]
+
+  @@unique([reportId, versionNumber])
+  @@index([reportId])
+}
+
+// ---------------------------------------------------------------------------
+// Version content. Every row below belongs to exactly one ReportVersion and
+// dies with it (onDelete: Cascade).
+// ---------------------------------------------------------------------------
+
+/// A task the member actually worked on during the week.
+model Task {
+  id              String       @id @default(cuid())
+  reportVersionId String
+  name            String
+  priority        TaskPriority @default(MEDIUM)
+  plannedPercent  Int          @default(0)
+  actualPercent   Int          @default(0)
+  status          TaskStatus   @default(NOT_STARTED)
+  hoursPlanned    Float        @default(0)
+  hoursSpent      Float        @default(0)
+  deliverable     String?
+
+  reportVersion ReportVersion @relation(fields: [reportVersionId], references: [id], onDelete: Cascade)
+
+  @@index([reportVersionId])
+}
+
+/// A task the member intends to do next week.
+model PlannedTask {
+  id              String @id @default(cuid())
+  reportVersionId String
+  name            String
+
+  reportVersion ReportVersion @relation(fields: [reportVersionId], references: [id], onDelete: Cascade)
+
+  @@index([reportVersionId])
+}
+
+model Blocker {
+  id              String  @id @default(cuid())
+  reportVersionId String
+  description     String
+  isKeyIssue      Boolean @default(false)
+
+  reportVersion ReportVersion @relation(fields: [reportVersionId], references: [id], onDelete: Cascade)
+
+  @@index([reportVersionId])
+}
+
+model Achievement {
+  id               String  @id @default(cuid())
+  reportVersionId  String
+  description      String
+  isKeyAchievement Boolean @default(false)
+
+  reportVersion ReportVersion @relation(fields: [reportVersionId], references: [id], onDelete: Cascade)
+
+  @@index([reportVersionId])
+}
+
+/// Optional breakdown of the week's hours by kind of work.
+model HoursByType {
+  id              String   @id @default(cuid())
+  reportVersionId String
+  taskType        TaskType
+  hours           Float    @default(0)
+
+  reportVersion ReportVersion @relation(fields: [reportVersionId], references: [id], onDelete: Cascade)
+
+  /// A version records each task type at most once.
+  @@unique([reportVersionId, taskType])
+  @@index([reportVersionId])
+}
+
+// ---------------------------------------------------------------------------
+// Review trail
+// ---------------------------------------------------------------------------
+
+/// A manager's decision on one specific version of one report.
+model ReviewComment {
+  id              String       @id @default(cuid())
+  reportId        String
+  reportVersionId String
+  managerId       String
+  comment         String
+  action          ReviewAction
+  createdAt       DateTime     @default(now())
+
+  report        Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  reportVersion ReportVersion @relation(fields: [reportVersionId], references: [id], onDelete: Cascade)
+  manager       User          @relation("ReviewCommentManager", fields: [managerId], references: [id], onDelete: Restrict)
+
+  @@index([reportId])
+  @@index([reportVersionId])
+  @@index([managerId])
+}
