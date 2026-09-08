@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ReportStatus, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { mondayOf, weekEndFor } from '../common/week.util';
-import { DashboardSection, SectionQueryDto, WeekQueryDto } from './dto/dashboard-query.dto';
+import {
+  DashboardSection,
+  SectionQueryDto,
+  WeekQueryDto,
+} from './dto/dashboard-query.dto';
 
 /**
  * Headline numbers and the cross-team section view.
@@ -25,48 +29,59 @@ export class DashboardService {
   async summary(query: WeekQueryDto) {
     const { weekStart, weekEnd } = this.resolveWeek(query);
 
-    const [expected, started, submitted, late, needsCorrectionCount, openBlockersCount] =
-      await this.prisma.$transaction([
-        // "Expected" = everyone who owes a report.
-        this.prisma.user.count({ where: { role: Role.TEAM_MEMBER } }),
+    const [
+      expected,
+      started,
+      submitted,
+      late,
+      needsCorrectionCount,
+      openBlockersCount,
+    ] = await this.prisma.$transaction([
+      // "Expected" = everyone who owes a report.
+      this.prisma.user.count({ where: { role: Role.TEAM_MEMBER } }),
 
-        // Started: a report row exists, whatever state it is in.
-        this.prisma.report.count({ where: { weekStartDate: weekStart } }),
+      // Started: a report row exists, whatever state it is in.
+      this.prisma.report.count({ where: { weekStartDate: weekStart } }),
 
-        // Submitted: it has left the member's hands. A DRAFT has not.
-        this.prisma.report.count({
-          where: { weekStartDate: weekStart, status: { not: ReportStatus.DRAFT } },
-        }),
+      // Submitted: it has left the member's hands. A DRAFT has not.
+      this.prisma.report.count({
+        where: {
+          weekStartDate: weekStart,
+          status: { not: ReportStatus.DRAFT },
+        },
+      }),
 
-        // LATE is defined as: the current version's submittedAt falls after the
-        // week's own weekEndDate (the Sunday). Reporting on a week after it has
-        // closed is late, however many revisions followed.
-        this.prisma.report.count({
-          where: {
-            weekStartDate: weekStart,
-            status: { not: ReportStatus.DRAFT },
-            currentVersion: { submittedAt: { gt: weekEnd } },
+      // LATE is defined as: the current version's submittedAt falls after the
+      // week's own weekEndDate (the Sunday). Reporting on a week after it has
+      // closed is late, however many revisions followed.
+      this.prisma.report.count({
+        where: {
+          weekStartDate: weekStart,
+          status: { not: ReportStatus.DRAFT },
+          currentVersion: { submittedAt: { gt: weekEnd } },
+        },
+      }),
+
+      // Team-wide and across all weeks: anything currently sitting with its
+      // author for rework.
+      this.prisma.report.count({
+        where: { status: ReportStatus.NEEDS_CORRECTION },
+      }),
+
+      // OPEN blockers only. A blocker is counted when it lives on the report's
+      // CURRENT version and that report is not yet APPROVED. A blocker on a
+      // superseded version is history -- the member already rewrote that
+      // version, so re-counting it would inflate the number with issues that
+      // no longer exist. Approved reports are finished, so their blockers are
+      // closed by definition.
+      this.prisma.blocker.count({
+        where: {
+          reportVersion: {
+            currentOf: { is: { status: { not: ReportStatus.APPROVED } } },
           },
-        }),
-
-        // Team-wide and across all weeks: anything currently sitting with its
-        // author for rework.
-        this.prisma.report.count({ where: { status: ReportStatus.NEEDS_CORRECTION } }),
-
-        // OPEN blockers only. A blocker is counted when it lives on the report's
-        // CURRENT version and that report is not yet APPROVED. A blocker on a
-        // superseded version is history -- the member already rewrote that
-        // version, so re-counting it would inflate the number with issues that
-        // no longer exist. Approved reports are finished, so their blockers are
-        // closed by definition.
-        this.prisma.blocker.count({
-          where: {
-            reportVersion: {
-              currentOf: { is: { status: { not: ReportStatus.APPROVED } } },
-            },
-          },
-        }),
-      ]);
+        },
+      }),
+    ]);
 
     return {
       weekStart,
@@ -126,13 +141,22 @@ export class DashboardService {
       },
     });
 
+    // The select above is conditional, so Prisma widens these to `any`. Both
+    // shapes carry a description plus one boolean flag, which is all this view
+    // needs, so they are narrowed to a common shape here.
+    type SectionRow = {
+      description: string;
+      isKeyIssue?: boolean;
+      isKeyAchievement?: boolean;
+    };
+
     return {
       weekStart,
       weekEnd,
       section: query.section,
       members: members.map((member) => {
         const report = member.reports[0];
-        const rows = wantsBlockers
+        const rows: SectionRow[] = wantsBlockers
           ? (report?.currentVersion?.blockers ?? [])
           : (report?.currentVersion?.achievements ?? []);
 
@@ -145,10 +169,7 @@ export class DashboardService {
           versionNumber: report?.currentVersion?.versionNumber ?? null,
           items: rows.map((row) => ({
             description: row.description,
-            isKey:
-              'isKeyIssue' in row
-                ? row.isKeyIssue
-                : (row as { isKeyAchievement: boolean }).isKeyAchievement,
+            isKey: row.isKeyIssue ?? row.isKeyAchievement ?? false,
           })),
         };
       }),

@@ -1,6 +1,14 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDateString, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 import { IsMonday } from '../../common/validators/is-monday.validator';
 
 /** Which cross-team section to line up side by side. */
@@ -47,7 +55,10 @@ export class ChartsQueryDto extends WeekQueryDto {
 }
 
 export class SectionQueryDto extends WeekQueryDto {
-  @ApiPropertyOptional({ enum: DashboardSection, default: DashboardSection.BLOCKERS })
+  @ApiPropertyOptional({
+    enum: DashboardSection,
+    default: DashboardSection.BLOCKERS,
+  })
   @IsOptional()
   @IsEnum(DashboardSection)
   section: DashboardSection = DashboardSection.BLOCKERS;

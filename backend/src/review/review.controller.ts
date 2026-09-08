@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
@@ -25,7 +34,9 @@ import { ReviewService } from './review.service';
  */
 @ApiTags('manager')
 @ApiBearerAuth()
-@ApiForbiddenResponse({ description: 'Team members cannot access manager routes' })
+@ApiForbiddenResponse({
+  description: 'Team members cannot access manager routes',
+})
 @Roles(Role.MANAGER)
 @Controller('manager')
 export class ReviewController {
@@ -38,7 +49,9 @@ export class ReviewController {
       'Filterable by userId, projectId, status and week range, all combinable. ' +
       'Sorted SUBMITTED first (what needs reviewing), then newest week.',
   })
-  @ApiOkResponse({ description: '{ data, meta: { page, limit, total, totalPages } }' })
+  @ApiOkResponse({
+    description: '{ data, meta: { page, limit, total, totalPages } }',
+  })
   findTeamReports(@Query() query: QueryTeamReportsDto) {
     return this.reviewService.findTeamReports(query);
   }
@@ -73,7 +86,9 @@ export class ReviewController {
       'NEEDS_CORRECTION (comment required). Either way a ReviewComment is ' +
       'written against the report’s current version. Content is never touched.',
   })
-  @ApiConflictResponse({ description: 'Only SUBMITTED reports can be reviewed' })
+  @ApiConflictResponse({
+    description: 'Only SUBMITTED reports can be reviewed',
+  })
   @ApiNotFoundResponse({ description: 'No such report' })
   review(
     @Param('id') id: string,

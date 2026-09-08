@@ -21,9 +21,13 @@ export interface ExistingVersionContent {
 }
 
 /** Strips database-only fields (ids, foreign keys) so a row can be re-created. */
-function stripIds<T extends Record<string, unknown>>(rows: T[]): Omit<T, 'id' | 'reportVersionId'>[] {
+function stripIds<T extends Record<string, unknown>>(
+  rows: T[],
+): Omit<T, 'id' | 'reportVersionId'>[] {
   return rows.map((row) => {
-    const { id: _id, reportVersionId: _fk, ...rest } = row as Record<string, unknown>;
+    const rest: Record<string, unknown> = { ...row };
+    delete rest.id;
+    delete rest.reportVersionId;
     return rest as Omit<T, 'id' | 'reportVersionId'>;
   });
 }
@@ -42,8 +46,14 @@ export function mergeContent(
   return {
     notes: patch.notes !== undefined ? patch.notes : previous.notes,
     links: patch.links !== undefined ? patch.links : previous.links,
-    tasks: patch.tasks !== undefined ? patch.tasks.map(normaliseTask) : previous.tasks,
-    plannedTasks: patch.plannedTasks !== undefined ? patch.plannedTasks : previous.plannedTasks,
+    tasks:
+      patch.tasks !== undefined
+        ? patch.tasks.map(normaliseTask)
+        : previous.tasks,
+    plannedTasks:
+      patch.plannedTasks !== undefined
+        ? patch.plannedTasks
+        : previous.plannedTasks,
     blockers:
       patch.blockers !== undefined
         ? patch.blockers.map((blocker) => ({
@@ -58,7 +68,10 @@ export function mergeContent(
             isKeyAchievement: achievement.isKeyAchievement ?? false,
           }))
         : previous.achievements,
-    hoursByType: patch.hoursByType !== undefined ? patch.hoursByType : previous.hoursByType,
+    hoursByType:
+      patch.hoursByType !== undefined
+        ? patch.hoursByType
+        : previous.hoursByType,
   };
 }
 
@@ -107,8 +120,12 @@ export function contentFromVersion(version: {
     tasks: stripIds(version.tasks) as ExistingVersionContent['tasks'],
     plannedTasks: stripIds(version.plannedTasks) as { name: string }[],
     blockers: stripIds(version.blockers) as ExistingVersionContent['blockers'],
-    achievements: stripIds(version.achievements) as ExistingVersionContent['achievements'],
-    hoursByType: stripIds(version.hoursByType) as ExistingVersionContent['hoursByType'],
+    achievements: stripIds(
+      version.achievements,
+    ) as ExistingVersionContent['achievements'],
+    hoursByType: stripIds(
+      version.hoursByType,
+    ) as ExistingVersionContent['hoursByType'],
   };
 }
 

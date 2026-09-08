@@ -49,8 +49,13 @@ export class ReportsController {
       'get their own reports here (normally none); team-wide views come from ' +
       'the manager endpoints.',
   })
-  @ApiOkResponse({ description: '{ data, meta: { page, limit, total, totalPages } }' })
-  findMine(@CurrentUser() user: AuthenticatedUser, @Query() query: QueryReportsDto) {
+  @ApiOkResponse({
+    description: '{ data, meta: { page, limit, total, totalPages } }',
+  })
+  findMine(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: QueryReportsDto,
+  ) {
     return this.reportsService.findMine(user, query);
   }
 
@@ -82,7 +87,9 @@ export class ReportsController {
   @Roles(Role.TEAM_MEMBER)
   @ApiOperation({ summary: 'Create a DRAFT report and its first version' })
   @ApiConflictResponse({ description: 'A report already exists for that week' })
-  @ApiForbiddenResponse({ description: 'Managers cannot author report content' })
+  @ApiForbiddenResponse({
+    description: 'Managers cannot author report content',
+  })
   create(@Body() dto: CreateReportDto, @CurrentUser() user: AuthenticatedUser) {
     return this.reportsService.create(dto, user);
   }
@@ -96,7 +103,9 @@ export class ReportsController {
       'new version and leaves the reviewed one untouched. SUBMITTED and ' +
       'APPROVED are refused with 409.',
   })
-  @ApiConflictResponse({ description: 'The report is not in an editable status' })
+  @ApiConflictResponse({
+    description: 'The report is not in an editable status',
+  })
   @ApiForbiddenResponse({ description: 'Managers cannot edit report content' })
   update(
     @Param('id') id: string,
@@ -112,9 +121,12 @@ export class ReportsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Submit for review',
-    description: 'DRAFT or NEEDS_CORRECTION -> SUBMITTED, stamping submittedAt.',
+    description:
+      'DRAFT or NEEDS_CORRECTION -> SUBMITTED, stamping submittedAt.',
   })
-  @ApiConflictResponse({ description: 'The report cannot be submitted from its status' })
+  @ApiConflictResponse({
+    description: 'The report cannot be submitted from its status',
+  })
   submit(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
     return this.reportsService.submit(id, user);
   }

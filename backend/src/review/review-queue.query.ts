@@ -33,11 +33,15 @@ export function buildQueueWhere(query: QueryTeamReportsDto): Prisma.Sql {
   }
 
   if (query.weekStartFrom) {
-    filters.push(Prisma.sql`r."weekStartDate" >= ${new Date(query.weekStartFrom)}`);
+    filters.push(
+      Prisma.sql`r."weekStartDate" >= ${new Date(query.weekStartFrom)}`,
+    );
   }
 
   if (query.weekStartTo) {
-    filters.push(Prisma.sql`r."weekStartDate" <= ${new Date(query.weekStartTo)}`);
+    filters.push(
+      Prisma.sql`r."weekStartDate" <= ${new Date(query.weekStartTo)}`,
+    );
   }
 
   return filters.length > 0

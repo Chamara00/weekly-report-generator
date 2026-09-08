@@ -1,10 +1,17 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma, ReportStatus, ReviewAction, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { mondayOf } from '../common/week.util';
 import type { AuthenticatedUser } from '../auth/types/authenticated-user.type';
 import { PaginatedResult } from '../reports/dto/query-reports.dto';
-import { REPORT_DETAIL_SELECT, REPORT_LIST_SELECT } from '../reports/reports.select';
+import {
+  REPORT_DETAIL_SELECT,
+  REPORT_LIST_SELECT,
+} from '../reports/reports.select';
 import { QueryTeamReportsDto } from './dto/query-team-reports.dto';
 import { ReviewReportDto } from './dto/review-report.dto';
 import { buildQueueWhere } from './review-queue.query';
@@ -19,7 +26,9 @@ export class ReviewService {
    * No ownership filtering happens here -- a manager is allowed to see
    * everything, and RolesGuard has already established that the caller is one.
    */
-  async findTeamReports(query: QueryTeamReportsDto): Promise<PaginatedResult<unknown>> {
+  async findTeamReports(
+    query: QueryTeamReportsDto,
+  ): Promise<PaginatedResult<unknown>> {
     const where = buildQueueWhere(query);
     const offset = (query.page - 1) * query.limit;
 
@@ -48,7 +57,9 @@ export class ReviewService {
 
     // `IN` does not preserve order, so restore the order the queue query chose.
     const byId = new Map(rows.map((row) => [row.id, row]));
-    const data = ids.map((id) => byId.get(id)).filter((row) => row !== undefined);
+    const data = ids
+      .map((id) => byId.get(id))
+      .filter((row) => row !== undefined);
 
     return {
       data,
@@ -103,7 +114,9 @@ export class ReviewService {
     }
 
     if (!report.currentVersionId) {
-      throw new ConflictException('This report has no submitted version to review');
+      throw new ConflictException(
+        'This report has no submitted version to review',
+      );
     }
 
     const nextStatus =
@@ -188,7 +201,8 @@ export class ReviewService {
             status: current?.status ?? null,
             // "Submitted" means it has left the member's hands: a DRAFT sitting
             // in their editor does not count as reported.
-            hasSubmitted: current !== undefined && current.status !== ReportStatus.DRAFT,
+            hasSubmitted:
+              current !== undefined && current.status !== ReportStatus.DRAFT,
           },
         };
       }),

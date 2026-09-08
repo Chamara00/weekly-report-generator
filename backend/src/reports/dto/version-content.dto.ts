@@ -74,7 +74,9 @@ export class BlockerDto {
   @IsNotEmpty()
   description!: string;
 
-  @ApiPropertyOptional({ description: 'Marks the single most important blocker' })
+  @ApiPropertyOptional({
+    description: 'Marks the single most important blocker',
+  })
   @IsOptional()
   @IsBoolean()
   isKeyIssue?: boolean;
@@ -162,7 +164,10 @@ export class VersionContentDto {
   @IsString()
   notes?: string;
 
-  @ApiPropertyOptional({ type: [String], example: ['https://github.com/example/pr/1'] })
+  @ApiPropertyOptional({
+    type: [String],
+    example: ['https://github.com/example/pr/1'],
+  })
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(20)

@@ -31,7 +31,9 @@ export const VERSION_CONTENT_SELECT = {
   },
   plannedTasks: { select: { id: true, name: true } },
   blockers: { select: { id: true, description: true, isKeyIssue: true } },
-  achievements: { select: { id: true, description: true, isKeyAchievement: true } },
+  achievements: {
+    select: { id: true, description: true, isKeyAchievement: true },
+  },
   hoursByType: { select: { id: true, taskType: true, hours: true } },
 } satisfies Prisma.ReportVersionSelect;
 

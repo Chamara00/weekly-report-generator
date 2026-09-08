@@ -1,5 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { DashboardActivityService } from './dashboard-activity.service';
@@ -21,7 +26,9 @@ import {
  */
 @ApiTags('dashboard')
 @ApiBearerAuth()
-@ApiForbiddenResponse({ description: 'Team members cannot access the dashboard' })
+@ApiForbiddenResponse({
+  description: 'Team members cannot access the dashboard',
+})
 @Roles(Role.MANAGER)
 @Controller('manager/dashboard')
 export class DashboardController {

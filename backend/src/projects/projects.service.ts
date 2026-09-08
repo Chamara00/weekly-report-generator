@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import {
@@ -36,7 +40,9 @@ export class ProjectsService {
       select: {
         ...PROJECT_SELECT,
         members: {
-          select: { user: { select: { id: true, name: true, email: true, role: true } } },
+          select: {
+            user: { select: { id: true, name: true, email: true, role: true } },
+          },
         },
       },
     });
@@ -61,7 +67,9 @@ export class ProjectsService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === UNIQUE_VIOLATION
       ) {
-        throw new ConflictException(`A project named "${dto.name}" already exists`);
+        throw new ConflictException(
+          `A project named "${dto.name}" already exists`,
+        );
       }
       throw error;
     }
@@ -81,7 +89,9 @@ export class ProjectsService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === UNIQUE_VIOLATION
       ) {
-        throw new ConflictException(`A project named "${dto.name}" already exists`);
+        throw new ConflictException(
+          `A project named "${dto.name}" already exists`,
+        );
       }
       throw error;
     }
@@ -143,7 +153,9 @@ export class ProjectsService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === UNIQUE_VIOLATION
       ) {
-        throw new ConflictException('That user is already assigned to this project');
+        throw new ConflictException(
+          'That user is already assigned to this project',
+        );
       }
       throw error;
     }

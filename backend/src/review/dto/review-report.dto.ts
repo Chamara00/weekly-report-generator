@@ -31,10 +31,14 @@ export class ReviewReportDto {
   // REQUEST_CHANGES through with no comment at all -- exactly what this rule
   // exists to prevent. @ValidateIf already provides the "optional for APPROVE"
   // half.
-  @ValidateIf((dto: ReviewReportDto) => dto.action === ReviewAction.REQUEST_CHANGES)
+  @ValidateIf(
+    (dto: ReviewReportDto) => dto.action === ReviewAction.REQUEST_CHANGES,
+  )
   @IsString()
   // Trim before validating so a comment of only spaces counts as empty.
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   @IsNotEmpty({ message: 'comment is required when requesting changes' })
   comment?: string;
 }

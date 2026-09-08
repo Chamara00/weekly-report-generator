@@ -50,7 +50,9 @@ export class ProjectsController {
   @Post()
   @Roles(Role.MANAGER)
   @ApiOperation({ summary: 'Create a project' })
-  @ApiConflictResponse({ description: 'A project with that name already exists' })
+  @ApiConflictResponse({
+    description: 'A project with that name already exists',
+  })
   @ApiForbiddenResponse({ description: 'Managers only' })
   create(@Body() dto: CreateProjectDto) {
     return this.projectsService.create(dto);
@@ -59,7 +61,9 @@ export class ProjectsController {
   @Patch(':id')
   @Roles(Role.MANAGER)
   @ApiOperation({ summary: 'Rename or re-describe a project' })
-  @ApiConflictResponse({ description: 'A project with that name already exists' })
+  @ApiConflictResponse({
+    description: 'A project with that name already exists',
+  })
   update(@Param('id') id: string, @Body() dto: UpdateProjectDto) {
     return this.projectsService.update(id, dto);
   }
@@ -88,7 +92,9 @@ export class ProjectsController {
   @Delete(':id/members/:userId')
   @Roles(Role.MANAGER)
   @ApiOperation({ summary: 'Unassign a user from a project' })
-  @ApiNotFoundResponse({ description: 'That user is not assigned to this project' })
+  @ApiNotFoundResponse({
+    description: 'That user is not assigned to this project',
+  })
   removeMember(@Param('id') id: string, @Param('userId') userId: string) {
     return this.projectsService.removeMember(id, userId);
   }

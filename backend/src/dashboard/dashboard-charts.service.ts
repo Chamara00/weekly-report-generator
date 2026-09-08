@@ -48,10 +48,11 @@ export class DashboardChartsService {
     const from = new Date(weekStart.getTime() - (query.weeks - 1) * 7 * DAY_MS);
     const filters = this.filters(query);
 
-    const [trendRows, statusRows, projectRows, taskTypeRows] = await Promise.all([
-      this.prisma.$queryRaw<
-        { weekStart: Date; userId: string; name: string; completed: number }[]
-      >(Prisma.sql`
+    const [trendRows, statusRows, projectRows, taskTypeRows] =
+      await Promise.all([
+        this.prisma.$queryRaw<
+          { weekStart: Date; userId: string; name: string; completed: number }[]
+        >(Prisma.sql`
         SELECT r."weekStartDate" AS "weekStart",
                u."id"            AS "userId",
                u."name"          AS "name",
@@ -66,10 +67,15 @@ export class DashboardChartsService {
         GROUP BY 1, 2, 3
       `),
 
-      // LEFT JOIN from User so a member with no reports still appears, at zero.
-      this.prisma.$queryRaw<
-        { userId: string; name: string; status: ReportStatus | null; count: number }[]
-      >(Prisma.sql`
+        // LEFT JOIN from User so a member with no reports still appears, at zero.
+        this.prisma.$queryRaw<
+          {
+            userId: string;
+            name: string;
+            status: ReportStatus | null;
+            count: number;
+          }[]
+        >(Prisma.sql`
         SELECT u."id" AS "userId", u."name", r."status", COUNT(r."id")::int AS "count"
         FROM "User" u
         LEFT JOIN "Report" r
@@ -80,7 +86,9 @@ export class DashboardChartsService {
         GROUP BY 1, 2, 3
       `),
 
-      this.prisma.$queryRaw<{ projectId: string; name: string; hours: number }[]>(Prisma.sql`
+        this.prisma.$queryRaw<
+          { projectId: string; name: string; hours: number }[]
+        >(Prisma.sql`
         SELECT p."id" AS "projectId",
                p."name",
                COALESCE(SUM(t."hoursSpent"), 0)::float8 AS "hours"
@@ -95,7 +103,9 @@ export class DashboardChartsService {
         ORDER BY "hours" DESC
       `),
 
-      this.prisma.$queryRaw<{ taskType: TaskType; hours: number }[]>(Prisma.sql`
+        this.prisma.$queryRaw<
+          { taskType: TaskType; hours: number }[]
+        >(Prisma.sql`
         SELECT h."taskType", COALESCE(SUM(h."hours"), 0)::float8 AS "hours"
         FROM "Report" r
         JOIN "ReportVersion" v ON v."id" = r."currentVersionId"
@@ -104,7 +114,7 @@ export class DashboardChartsService {
         ${filters}
         GROUP BY 1
       `),
-    ]);
+      ]);
 
     return {
       weekStart,
@@ -121,7 +131,12 @@ export class DashboardChartsService {
    * a chart never has to cope with gaps in its x-axis.
    */
   private buildTrend(
-    rows: { weekStart: Date; userId: string; name: string; completed: number }[],
+    rows: {
+      weekStart: Date;
+      userId: string;
+      name: string;
+      completed: number;
+    }[],
     from: Date,
     weeks: number,
   ) {
@@ -144,11 +159,21 @@ export class DashboardChartsService {
 
   /** One row per member with all four statuses present, zero-filled. */
   private buildStatusByMember(
-    rows: { userId: string; name: string; status: ReportStatus | null; count: number }[],
+    rows: {
+      userId: string;
+      name: string;
+      status: ReportStatus | null;
+      count: number;
+    }[],
   ) {
     const byMember = new Map<
       string,
-      { userId: string; name: string; total: number; byStatus: Record<ReportStatus, number> }
+      {
+        userId: string;
+        name: string;
+        total: number;
+        byStatus: Record<ReportStatus, number>;
+      }
     >();
 
     for (const row of rows) {

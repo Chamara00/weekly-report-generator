@@ -48,13 +48,19 @@ export class ReportsService {
    * Deliberately a separate, tiny query rather than a generic select bolted
    * onto each caller -- it keeps every read path using one identical rule.
    */
-  private async assertCanRead(id: string, user: AuthenticatedUser): Promise<void> {
+  private async assertCanRead(
+    id: string,
+    user: AuthenticatedUser,
+  ): Promise<void> {
     const report = await this.prisma.report.findUnique({
       where: { id },
       select: { userId: true },
     });
 
-    if (!report || (user.role === Role.TEAM_MEMBER && report.userId !== user.id)) {
+    if (
+      !report ||
+      (user.role === Role.TEAM_MEMBER && report.userId !== user.id)
+    ) {
       throw new NotFoundException('Report not found');
     }
   }
@@ -66,9 +72,14 @@ export class ReportsService {
    * rule is "a manager can never edit report content", not "a manager cannot
    * reach this particular URL".
    */
-  private assertCanWriteContent(user: AuthenticatedUser, ownerId?: string): void {
+  private assertCanWriteContent(
+    user: AuthenticatedUser,
+    ownerId?: string,
+  ): void {
     if (user.role !== Role.TEAM_MEMBER) {
-      throw new ForbiddenException('Managers cannot create or edit report content');
+      throw new ForbiddenException(
+        'Managers cannot create or edit report content',
+      );
     }
 
     if (ownerId !== undefined && ownerId !== user.id) {
@@ -92,8 +103,12 @@ export class ReportsService {
       ...(query.weekStartFrom || query.weekStartTo
         ? {
             weekStartDate: {
-              ...(query.weekStartFrom ? { gte: new Date(query.weekStartFrom) } : {}),
-              ...(query.weekStartTo ? { lte: new Date(query.weekStartTo) } : {}),
+              ...(query.weekStartFrom
+                ? { gte: new Date(query.weekStartFrom) }
+                : {}),
+              ...(query.weekStartTo
+                ? { lte: new Date(query.weekStartTo) }
+                : {}),
             },
           }
         : {}),
@@ -133,7 +148,11 @@ export class ReportsService {
   }
 
   /** One specific version -- what "view the version this comment was on" calls. */
-  async findVersion(reportId: string, versionId: string, user: AuthenticatedUser) {
+  async findVersion(
+    reportId: string,
+    versionId: string,
+    user: AuthenticatedUser,
+  ) {
     // Ownership is checked against the report first, so an unrelated version id
     // cannot be used to read someone else's content.
     await this.assertCanRead(reportId, user);
@@ -264,11 +283,21 @@ export class ReportsService {
           // used rather than diffing: the client sends whole sections, and a
           // diff would add complexity with no behavioural gain.
           await Promise.all([
-            tx.task.deleteMany({ where: { reportVersionId: currentVersionId } }),
-            tx.plannedTask.deleteMany({ where: { reportVersionId: currentVersionId } }),
-            tx.blocker.deleteMany({ where: { reportVersionId: currentVersionId } }),
-            tx.achievement.deleteMany({ where: { reportVersionId: currentVersionId } }),
-            tx.hoursByType.deleteMany({ where: { reportVersionId: currentVersionId } }),
+            tx.task.deleteMany({
+              where: { reportVersionId: currentVersionId },
+            }),
+            tx.plannedTask.deleteMany({
+              where: { reportVersionId: currentVersionId },
+            }),
+            tx.blocker.deleteMany({
+              where: { reportVersionId: currentVersionId },
+            }),
+            tx.achievement.deleteMany({
+              where: { reportVersionId: currentVersionId },
+            }),
+            tx.hoursByType.deleteMany({
+              where: { reportVersionId: currentVersionId },
+            }),
           ]);
 
           await tx.reportVersion.update({
