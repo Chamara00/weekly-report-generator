@@ -39,3 +39,7 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local working docs (ER diagram source + architecture notes).
+# These are delivered via the shared Drive folder, not the repo.
+docs/
