@@ -38,7 +38,7 @@ export default async function DashboardPage() {
         message={
           error instanceof Error
             ? error.message
-            : 'The API did not respond. Check that the backend is running.'
+            : 'Something went wrong loading your dashboard. Please try again.'
         }
       />
     );

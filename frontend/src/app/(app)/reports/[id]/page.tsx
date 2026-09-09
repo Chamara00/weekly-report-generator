@@ -37,7 +37,7 @@ export default async function ReportDetailPage({
     return (
       <ErrorState
         title="Could not load this report"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }
@@ -79,7 +79,7 @@ export default async function ReportDetailPage({
           <span className="font-medium">
             Viewing version {shownVersion.versionNumber}
           </span>{' '}
-          — a frozen earlier submission.{' '}
+          - a frozen earlier submission.{' '}
           <Link href={`/reports/${report.id}`} className="underline underline-offset-4">
             Back to the current version
           </Link>

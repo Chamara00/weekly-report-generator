@@ -196,7 +196,7 @@ export function useReportForm(report: ReportDetail | undefined, defaultWeek?: st
       } else if (error instanceof ApiError) {
         setFormError(error.message);
       } else {
-        setFormError('Could not reach the server. Your changes were not saved.');
+        setFormError('Something went wrong. Your changes were not saved.');
       }
     } finally {
       setPending(null);

@@ -146,7 +146,7 @@ export function UsersTable({
             title={`Delete ${user.name}?`}
             description={
               user._count.reports > 0
-                ? `${user.name} has filed ${user._count.reports} report(s). The server will refuse this — deactivate instead so their reporting history survives.`
+                ? `${user.name} has filed ${user._count.reports} report(s), so this account cannot be deleted. Deactivate it instead to keep their reporting history.`
                 : 'This account has no reports and can be removed permanently.'
             }
             confirmLabel="Delete"

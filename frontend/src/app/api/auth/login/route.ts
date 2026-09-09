@@ -30,6 +30,6 @@ export async function POST(request: Request) {
     if (error instanceof ApiError) {
       return NextResponse.json({ message: error.message }, { status: error.status });
     }
-    return NextResponse.json({ message: 'Unable to reach the API' }, { status: 502 });
+    return NextResponse.json({ message: 'Something went wrong. Please try again.' }, { status: 502 });
   }
 }

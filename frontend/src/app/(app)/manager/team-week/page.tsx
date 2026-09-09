@@ -23,7 +23,7 @@ async function SectionGrid({ week, section }: { week: string; section: string })
     return (
       <ErrorState
         title="Could not load this week"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }

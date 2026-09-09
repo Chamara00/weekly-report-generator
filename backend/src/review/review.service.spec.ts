@@ -78,7 +78,7 @@ describe('ReviewService.review', () => {
     );
   });
 
-  it('never writes report content — only a status and a comment', async () => {
+  it('never writes report content - only a status and a comment', async () => {
     givenReport(ReportStatus.SUBMITTED, 'v1');
 
     await service.review('report-1', { action: ReviewAction.APPROVE }, MANAGER);

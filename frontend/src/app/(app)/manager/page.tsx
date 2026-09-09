@@ -72,7 +72,7 @@ async function DashboardContent({ weekStart }: { weekStart: string }) {
     return (
       <ErrorState
         title="Could not load the dashboard"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }

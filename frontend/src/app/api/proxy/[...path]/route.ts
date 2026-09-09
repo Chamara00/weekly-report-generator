@@ -36,7 +36,7 @@ async function forward(request: NextRequest, path: string[]) {
     });
   } catch {
     return NextResponse.json(
-      { message: 'Unable to reach the API. Is the backend running?' },
+      { message: 'Something went wrong. Please try again.' },
       { status: 502 },
     );
   }

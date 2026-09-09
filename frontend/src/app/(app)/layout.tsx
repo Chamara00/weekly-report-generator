@@ -14,7 +14,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   try {
     user = await getCurrentUser();
   } catch {
-    // Cookie exists but the API rejected it (expired, revoked, user gone) — clear it, or we loop.
+    // Cookie exists but the API rejected it (expired, revoked, user gone) - clear it, or we loop.
     redirect('/api/auth/clear');
   }
 

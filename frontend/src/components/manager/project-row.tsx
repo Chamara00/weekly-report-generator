@@ -101,7 +101,7 @@ export function ProjectRow({
           title={`Delete "${project.name}"?`}
           description={
             reportCount > 0
-              ? `${reportCount} report(s) are filed against this project. The server will refuse to delete it — reports are a historical record and are never cascade-deleted.`
+              ? `${reportCount} report(s) are filed against this project, so it cannot be deleted. Reports are kept as a permanent record of work done.`
               : 'This project has no reports and can be safely removed.'
           }
           confirmLabel="Delete"

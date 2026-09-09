@@ -48,7 +48,7 @@ export function LoginForm({ expired = false }: { expired?: boolean }) {
       router.push(homePathForRole(payload.user.role));
       router.refresh();
     } catch {
-      setFormError('Unable to reach the server. Is the API running?');
+      setFormError('Unable to sign in right now. Please try again.');
     } finally {
       setSubmitting(false);
     }

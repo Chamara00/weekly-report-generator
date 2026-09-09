@@ -8,7 +8,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const iso = (date: Date) => date.toISOString().slice(0, 10);
 
 // Chart data aggregated in Postgres. Every query joins v.id = r.currentVersionId, NEVER
-// v.reportId — joining reportId would count a revised report once per version.
+// v.reportId - joining reportId would count a revised report once per version.
 @Injectable()
 export class DashboardChartsService {
   constructor(private readonly prisma: PrismaService) {}

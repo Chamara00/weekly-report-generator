@@ -236,7 +236,7 @@ export function ReportForm({
           description={
             isEditing && report?.status === 'NEEDS_CORRECTION'
               ? 'This saves your corrections as a new version and sends it back to your manager. The content is frozen once submitted.'
-              : 'Your manager will be able to review it. The content is frozen once submitted — you can only change it again if a manager requests changes.'
+              : 'Your manager will be able to review it. The content is frozen once submitted - you can only change it again if a manager requests changes.'
           }
           confirmLabel="Submit"
           onConfirm={() => save('submit')}

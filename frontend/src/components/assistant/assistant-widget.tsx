@@ -53,7 +53,7 @@ export function AssistantWidget() {
       setError(
         caught instanceof ApiError
           ? caught.message
-          : 'Could not reach the assistant. Is the backend running?',
+          : 'The assistant is unavailable right now. Please try again.',
       );
     } finally {
       setPending(false);

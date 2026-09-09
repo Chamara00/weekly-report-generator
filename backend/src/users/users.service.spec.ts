@@ -33,7 +33,7 @@ describe('UsersService (manager administration)', () => {
     ...over,
   });
 
-  // Role assignment — the requirement this module exists for.
+  // Role assignment - the requirement this module exists for.
 
   describe('updateRole', () => {
     it('promotes a team member to MANAGER', async () => {

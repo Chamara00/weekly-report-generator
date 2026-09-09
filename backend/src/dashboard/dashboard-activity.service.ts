@@ -16,7 +16,7 @@ interface ActivityRow {
 }
 
 // Activity feed: submissions and review decisions, newest first. Unlike the charts this reads
-// ALL versions — it is a log of events, and each submission genuinely happened.
+// ALL versions - it is a log of events, and each submission genuinely happened.
 @Injectable()
 export class DashboardActivityService {
   constructor(private readonly prisma: PrismaService) {}

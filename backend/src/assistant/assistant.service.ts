@@ -131,7 +131,7 @@ export class AssistantService {
     return {
       answer:
         'I looked that up several times without settling on an answer. Try asking ' +
-        'something narrower — a single week, or one person.',
+        'something narrower - a single week, or one person.',
       toolsUsed,
       model: this.model,
     };

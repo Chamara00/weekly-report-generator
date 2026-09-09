@@ -18,7 +18,7 @@ export default async function ProjectsPage() {
     return (
       <ErrorState
         title="Could not load projects"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }

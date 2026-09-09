@@ -6,9 +6,9 @@ correction, and get a dashboard analysing reports across the team.
 
 Two roles:
 
-- **TEAM_MEMBER** — writes, edits and submits their own reports. Can never see
+- **TEAM_MEMBER** - writes, edits and submits their own reports. Can never see
   anybody else's.
-- **MANAGER** — reads every report, approves or requests changes, manages
+- **MANAGER** - reads every report, approves or requests changes, manages
   projects, and sees the analytics dashboard. Can never edit report content.
 
 Report lifecycle:
@@ -36,7 +36,7 @@ DRAFT ──▶ SUBMITTED ──▶ APPROVED
 | Styling | **Tailwind + shadcn/ui** | Consistent primitives without hand-rolling a design system. |
 | Charts | **Recharts** | Composable React charts; the API returns chart-ready aggregates. |
 | Tests | **Jest** | Nest's default; the access-control rules are unit-testable against a mocked Prisma client. |
-| AI | **Google Gemini** (`@google/genai`) | Function calling lets the assistant reuse the existing services as tools rather than getting its own path to the data. Optional — the app runs fine without a key. |
+| AI | **Google Gemini** (`@google/genai`) | Function calling lets the assistant reuse the existing services as tools rather than getting its own path to the data. Optional - the app runs fine without a key. |
 
 ## Architecture overview
 
@@ -80,15 +80,20 @@ git clone <repository-url>
 cd Sysenco
 ```
 
-Both apps ship an example env file. Copy each one and fill it in — neither
-`.env` is committed.
+Create the two files below and fill in your own values. Neither is committed.
 
-```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env.local
+**Create `backend/.env`:**
+
+```ini
+DATABASE_URL="postgresql://USER:PASSWORD@HOST-pooler.REGION.aws.neon.tech/DB?sslmode=require"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST.REGION.aws.neon.tech/DB?sslmode=require"
+JWT_SECRET="a-long-random-string"
+JWT_EXPIRES_IN="1d"
+FRONTEND_URL="http://localhost:3000"
+PORT=3001
+GEMINI_API_KEY=""
+GEMINI_MODEL="gemini-2.5-flash"
 ```
-
-**`backend/.env`** — see [backend/.env.example](backend/.env.example):
 
 | Variable | What it is |
 | --- | --- |
@@ -101,7 +106,11 @@ cp frontend/.env.example frontend/.env.local
 | `GEMINI_API_KEY` | **Optional.** Enables the AI assistant. Free key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Leave blank and the widget is simply hidden. |
 | `GEMINI_MODEL` | **Optional.** Defaults to `gemini-2.5-flash`. |
 
-**`frontend/.env.local`** — see [frontend/.env.example](frontend/.env.example):
+**Create `frontend/.env.local`:**
+
+```ini
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
 | Variable | What it is |
 | --- | --- |
@@ -138,7 +147,7 @@ npx prisma migrate status
 npm run db:seed               # or: npx prisma db seed
 ```
 
-The seed is **idempotent** — it clears every table first, so re-running gives
+The seed is **idempotent** - it clears every table first, so re-running gives
 an identical dataset. It creates 7 users, 5 projects and 26 reports across six
 weeks ending with the current one, including reports with genuine multi-version
 history and a partially-filled current week.
@@ -157,7 +166,7 @@ Every account uses the password **`password123`**.
 | Daniel Okafor | `daniel.okafor@example.com` | TEAM_MEMBER |
 | Yuki Tanaka | `yuki.tanaka@example.com` | TEAM_MEMBER |
 
-> Sofia has a report awaiting correction — the quickest way to see the
+> Sofia has a report awaiting correction - the quickest way to see the
 > correction loop. Priya is the deliberately overloaded member in the analytics.
 
 ## 5. Run the backend
@@ -215,16 +224,16 @@ protected endpoints become callable from the page.
 
 ## Features
 
-**Team member** — dashboard with this week's status and a correction callout,
+**Team member** - dashboard with this week's status and a correction callout,
 report history with filters, the weekly report form (create/edit, draft vs
 submit), and a read-only report view with version history.
 
-**Manager** — analytics dashboard (four metrics, four Recharts visuals, activity
+**Manager** - analytics dashboard (four metrics, four Recharts visuals, activity
 feed), review queue with combinable filters, review page (approve / request
 changes), team list and per-member profiles, project CRUD with member
 assignment, cross-team week view, and user management.
 
-**AI assistant** (optional) — a manager-only chat widget. Ask *"what is blocking
+**AI assistant** (optional) - a manager-only chat widget. Ask *"what is blocking
 the team this week?"*, *"who hasn't submitted?"*, *"is anyone overloaded?"*. It
 answers with Gemini function calling over the same services the dashboard uses,
 so its numbers always match the UI. Hidden entirely when `GEMINI_API_KEY` is
@@ -233,7 +242,7 @@ unset.
 ## Notes
 
 - Public registration always creates a **TEAM_MEMBER**. Roles are assigned by a
-  manager on **/manager/users** — that is the only way a MANAGER is created.
+  manager on **/manager/users** - that is the only way a MANAGER is created.
 - Removing a team member **deactivates** them rather than deleting: `User →
   Report` cascades, so a hard delete would destroy their reporting history.
   Deactivation blocks login immediately (existing tokens included) and keeps

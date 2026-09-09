@@ -48,7 +48,7 @@ export class AssistantTools {
       name: 'find_reports',
       description:
         'Search reports across the team. Filter by member, project, status and ' +
-        'week range. Returns a compact list (no report content) — follow up with ' +
+        'week range. Returns a compact list (no report content) - follow up with ' +
         'get_report for the details of a specific one.',
       parameters: {
         type: Type.OBJECT,
@@ -94,7 +94,7 @@ export class AssistantTools {
     {
       name: 'get_week_section',
       description:
-        'One section — BLOCKERS or ACHIEVEMENTS — from every team member for a ' +
+        'One section - BLOCKERS or ACHIEVEMENTS - from every team member for a ' +
         'single week, side by side. Best for "what is blocking the team" questions.',
       parameters: {
         type: Type.OBJECT,

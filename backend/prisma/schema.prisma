@@ -1,4 +1,4 @@
-// Weekly Report Hub — database schema.
+// Weekly Report Hub - database schema.
 
 generator client {
   provider = "prisma-client-js"

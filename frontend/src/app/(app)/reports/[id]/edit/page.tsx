@@ -31,7 +31,7 @@ export default async function EditReportPage({
     return (
       <ErrorState
         title="Could not load this report"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }

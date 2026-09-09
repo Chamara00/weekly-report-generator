@@ -24,7 +24,7 @@ export function ReviewPanel({ report }: { report: ReportDetail }) {
     setError('');
 
     if (action === 'REQUEST_CHANGES' && !comment.trim()) {
-      setError('A comment is required when requesting changes — say what needs fixing.');
+      setError('A comment is required when requesting changes - say what needs fixing.');
       return;
     }
 
@@ -51,7 +51,7 @@ export function ReviewPanel({ report }: { report: ReportDetail }) {
       } else if (caught instanceof ApiError) {
         setError(caught.message);
       } else {
-        setError('Could not reach the server. Nothing was changed.');
+        setError('Something went wrong. Nothing was changed.');
       }
       setPending(null);
     }
@@ -66,7 +66,7 @@ export function ReviewPanel({ report }: { report: ReportDetail }) {
             {report.status === 'APPROVED'
               ? 'This report is approved. Nothing further to do.'
               : report.status === 'NEEDS_CORRECTION'
-                ? 'Sent back — waiting for the author to revise and resubmit.'
+                ? 'Sent back - waiting for the author to revise and resubmit.'
                 : 'Still a draft. It has not been submitted for review yet.'}
           </CardDescription>
         </CardHeader>
@@ -80,7 +80,7 @@ export function ReviewPanel({ report }: { report: ReportDetail }) {
         <CardTitle className="text-base">Review this report</CardTitle>
         <CardDescription>
           Your comment is recorded against version{' '}
-          {report.currentVersion?.versionNumber ?? 1} — the one shown here.
+          {report.currentVersion?.versionNumber ?? 1} - the one shown here.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

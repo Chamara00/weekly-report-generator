@@ -34,7 +34,7 @@ export default async function ReviewReportPage({
     return (
       <ErrorState
         title="Could not load this report"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }
@@ -68,7 +68,7 @@ export default async function ReviewReportPage({
 
       {isViewingPast && shownVersion ? (
         <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm dark:border-blue-900 dark:bg-blue-950/40">
-          <span className="font-medium">Viewing version {shownVersion.versionNumber}</span> — a
+          <span className="font-medium">Viewing version {shownVersion.versionNumber}</span> - a
           frozen earlier submission. Review actions always apply to the current version.{' '}
           <Link href={`/manager/reports/${report.id}`} className="underline underline-offset-4">
             Back to the current version

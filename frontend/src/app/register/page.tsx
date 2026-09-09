@@ -57,7 +57,7 @@ export default function RegisterPage() {
       router.refresh();
     } catch (error) {
       setFormError(
-        error instanceof ApiError ? error.message : 'Unable to reach the server',
+        error instanceof ApiError ? error.message : 'Something went wrong. Please try again.',
       );
     } finally {
       setSubmitting(false);

@@ -68,7 +68,7 @@ export function ReportContent({ version }: { version: ReportVersion }) {
                         {task.hoursSpent} / {task.hoursPlanned}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
-                        {task.deliverable ?? '—'}
+                        {task.deliverable ?? '-'}
                       </TableCell>
                     </TableRow>
                   ))}

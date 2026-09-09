@@ -22,7 +22,6 @@ export default async function SettingsPage() {
     { label: 'Name', value: user.name },
     { label: 'Email', value: user.email },
     { label: 'Role', value: humanise(user.role) },
-    { label: 'User ID', value: user.id },
   ];
 
   return (
@@ -32,10 +31,7 @@ export default async function SettingsPage() {
       <Card className="max-w-xl">
         <CardHeader>
           <CardTitle>Account</CardTitle>
-          <CardDescription>
-            These come from your access token, resolved against the database on
-            every request.
-          </CardDescription>
+          <CardDescription>Your account information.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {fields.map((field) => (
@@ -46,8 +42,8 @@ export default async function SettingsPage() {
           ))}
 
           <p className="text-muted-foreground border-t pt-4 text-xs">
-            Profile editing and password changes are not available: the API has
-            no endpoint for them yet. Roles are assigned by a manager.
+            Your role is assigned by a manager. Contact them if it needs to
+            change.
           </p>
         </CardContent>
       </Card>

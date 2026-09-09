@@ -46,7 +46,7 @@ async function Queue({ params }: { params: SearchParams }) {
     return (
       <ErrorState
         title="Could not load the queue"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }
@@ -63,7 +63,7 @@ export default async function ManagerReportsPage({
     <>
       <PageHeader
         title="Review queue"
-        description="Every member's reports. Submitted ones come first — those are the ones waiting on you."
+        description="Every member's reports. Submitted ones come first - those are the ones waiting on you."
       />
 
       <Suspense key={JSON.stringify(params)} fallback={<TableSkeleton rows={8} columns={6} />}>

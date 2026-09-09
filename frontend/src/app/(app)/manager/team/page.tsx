@@ -16,7 +16,7 @@ export default async function TeamPage() {
     return (
       <ErrorState
         title="Could not load the team"
-        message={error instanceof Error ? error.message : 'The API did not respond.'}
+        message={error instanceof Error ? error.message : 'Something went wrong. Please try again.'}
       />
     );
   }

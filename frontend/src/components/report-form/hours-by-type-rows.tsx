@@ -52,7 +52,7 @@ export function HoursByTypeRows({
         Breakdown total: <span className="tabular-nums font-medium">{total}h</span> · hours
         spent on tasks above: <span className="tabular-nums font-medium">{taskHoursTotal}h</span>
         {total > 0 && Math.abs(total - taskHoursTotal) > 0.5
-          ? ' — these do not match, which is allowed but worth a check.'
+          ? ' - these do not match, which is allowed but worth a check.'
           : ''}
       </p>
     </div>

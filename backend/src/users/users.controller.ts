@@ -97,7 +97,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'Permanently delete a user',
     description:
-      'Refused when the user has filed reports — those cascade — so anyone with ' +
+      'Refused when the user has filed reports - those cascade - so anyone with ' +
       'history is deactivated instead.',
   })
   @ApiConflictResponse({

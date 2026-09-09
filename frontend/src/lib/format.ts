@@ -2,7 +2,7 @@
 
 // "2026-09-07" -> "7 Sep 2026".
 export function formatDate(value: string | Date | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return '-';
 
   return new Date(value).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -13,7 +13,7 @@ export function formatDate(value: string | Date | null | undefined): string {
 }
 
 export function formatDateTime(value: string | Date | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return '-';
 
   return new Date(value).toLocaleString('en-GB', {
     day: 'numeric',

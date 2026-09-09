@@ -41,7 +41,7 @@ export function InviteUserForm() {
     } catch (caught) {
       if (caught instanceof ValidationError) setError(caught.messages.join(', '));
       else if (caught instanceof ApiError) setError(caught.message);
-      else setError('Could not reach the server.');
+      else setError('Something went wrong. Please try again.');
     } finally {
       setPending(false);
     }
@@ -65,7 +65,7 @@ export function InviteUserForm() {
         {issued ? (
           <Alert>
             <AlertDescription>
-              <p className="font-medium">Account created — copy this password now.</p>
+              <p className="font-medium">Account created - copy this password now.</p>
               <p className="mt-1 text-sm">
                 {issued.email} ·{' '}
                 <code className="bg-muted rounded px-1.5 py-0.5 font-mono">
