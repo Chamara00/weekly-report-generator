@@ -1,0 +1,28 @@
+# Render blueprint for the NestJS API.
+# Deploy: render.com -> New -> Blueprint -> pick this repo.
+services:
+  - type: web
+    name: weekly-report-hub-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci && npx prisma generate && npm run build
+    # Migrations run on every deploy; prisma migrate deploy is idempotent.
+    startCommand: npx prisma migrate deploy && node dist/main
+    healthCheckPath: /health
+    envVars:
+      # sync: false means "prompt me for this value", so no secret is committed.
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: FRONTEND_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash

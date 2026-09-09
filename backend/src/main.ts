@@ -38,6 +38,7 @@ async function bootstrap() {
     SwaggerModule.createDocument(app, swaggerConfig),
   );
 
-  await app.listen(process.env.PORT ?? 3001);
+  // Bind to 0.0.0.0 so container platforms can route to it; PORT is injected.
+  await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
 }
 void bootstrap();
