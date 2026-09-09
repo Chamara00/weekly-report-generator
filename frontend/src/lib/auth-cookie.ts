@@ -1,6 +1,6 @@
 import type { Role } from './api';
 
-/** Name of the httpOnly cookie holding the access token. */
+// Name of the httpOnly cookie holding the access token.
 export const AUTH_COOKIE = 'access_token';
 
 export interface TokenClaims {
@@ -11,16 +11,7 @@ export interface TokenClaims {
   exp: number;
 }
 
-/**
- * Reads the claims out of a JWT WITHOUT verifying the signature.
- *
- * That is deliberate and safe here: this is only used to decide which page to
- * show. Nest verifies the signature on every API call, so a forged cookie gets
- * you a rendered shell and 401s from every request behind it.
- *
- * Written with atob rather than a library because middleware runs on the Edge
- * runtime, where Node's Buffer is not available.
- */
+// Reads the claims out of a JWT WITHOUT verifying the signature.
 export function decodeToken(token: string): TokenClaims | null {
   try {
     const payload = token.split('.')[1];
@@ -40,7 +31,7 @@ export function decodeToken(token: string): TokenClaims | null {
   }
 }
 
-/** Where a user of this role belongs after logging in. */
+// Where a user of this role belongs after logging in.
 export function homePathForRole(role: Role): string {
   return role === 'MANAGER' ? '/manager' : '/dashboard';
 }

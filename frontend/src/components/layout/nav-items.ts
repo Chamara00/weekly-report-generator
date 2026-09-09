@@ -3,14 +3,11 @@ import type { Role } from '@/lib/types';
 export interface NavItem {
   href: string;
   label: string;
-  /** Which roles see this link. The backend enforces the real rules. */
+  // Which roles see this link.
   roles: Role[];
 }
 
-/**
- * One nav definition, consumed by both the desktop sidebar and the mobile
- * drawer, so the two can never drift apart.
- */
+// One nav definition, consumed by both the desktop sidebar and the mobile drawer.
 export const NAV_ITEMS: NavItem[] = [
   { href: '/dashboard', label: 'My dashboard', roles: ['TEAM_MEMBER'] },
   { href: '/reports', label: 'My reports', roles: ['TEAM_MEMBER'] },

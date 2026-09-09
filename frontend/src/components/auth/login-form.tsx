@@ -32,8 +32,7 @@ export function LoginForm({ expired = false }: { expired?: boolean }) {
 
     setSubmitting(true);
     try {
-      // Posts to our own Route Handler, not to Nest: the handler is what can
-      // set an httpOnly cookie.
+      // Posts to our own Route Handler, not to Nest: the handler is what can set an httpOnly cookie.
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

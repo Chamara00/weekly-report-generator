@@ -10,19 +10,13 @@ import type {
   Role,
 } from './types';
 
-/**
- * Client-side mutations, routed through /api/proxy so the httpOnly cookie can
- * be turned into a Bearer header on the server.
- *
- * Errors are rethrown as ApiError carrying the backend's status and message,
- * including class-validator's per-field list, which the forms map to inputs.
- */
+// Client-side mutations go through /api/proxy, which attaches the Bearer header server-side.
 
 export interface FieldErrors {
   [field: string]: string;
 }
 
-/** Nest returns validation failures as ["tasks.0.name should not be empty", ...]. */
+// Nest returns validation failures as ["tasks.0.name should not be empty", ...].
 export function toFieldErrors(messages: string[]): FieldErrors {
   const errors: FieldErrors = {};
 
@@ -87,9 +81,8 @@ export function submitReport(id: string): Promise<ReportDetail> {
 
 export { ApiError };
 
-// ---------------------------------------------------------------------------
-// Manager mutations
-// ---------------------------------------------------------------------------
+
+// Manager mutations ---------------------------------------------------------------------------
 
 export function reviewReport(
   id: string,
@@ -121,9 +114,8 @@ export function deleteProject(id: string): Promise<{ id: string; deleted: boolea
   });
 }
 
-// ---------------------------------------------------------------------------
-// User administration
-// ---------------------------------------------------------------------------
+
+// User administration ---------------------------------------------------------------------------
 
 export function inviteUser(body: {
   email: string;
@@ -160,9 +152,8 @@ export function removeProjectMember(projectId: string, userId: string): Promise<
   return proxy<Project>(`/projects/${projectId}/members/${userId}`, { method: 'DELETE' });
 }
 
-// ---------------------------------------------------------------------------
-// AI assistant
-// ---------------------------------------------------------------------------
+
+// AI assistant ---------------------------------------------------------------------------
 
 export interface AssistantReply {
   answer: string;

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
-/** Clears the auth cookie via the logout Route Handler, then bounces to /login. */
+// Clears the auth cookie via the logout Route Handler, then bounces to /login.
 export function SignOutButton() {
   const router = useRouter();
 

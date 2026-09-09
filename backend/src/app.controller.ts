@@ -8,7 +8,7 @@ import { Public } from './auth/decorators/public.decorator';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  /** Unauthenticated liveness check. */
+  // Unauthenticated liveness check.
   @Public()
   @Get('health')
   @ApiOperation({ summary: 'Liveness check' })

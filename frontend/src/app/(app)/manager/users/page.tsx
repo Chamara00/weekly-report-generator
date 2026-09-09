@@ -7,13 +7,7 @@ import { getCurrentUser, getUsers } from '@/lib/server-api';
 
 export const metadata = { title: 'User management' };
 
-/**
- * Admin page: invite people, assign roles, deactivate or remove accounts.
- *
- * This is where §1's "role assignment" happens. Public registration always
- * creates a TEAM_MEMBER, so a manager can only be made here, by an existing
- * manager.
- */
+// Admin page: invite people, assign roles, deactivate or remove accounts.
 export default async function UsersPage({
   searchParams,
 }: {

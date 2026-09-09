@@ -1,13 +1,6 @@
 import type { PrismaService } from '../prisma/prisma.service';
 
-/**
- * A hand-rolled PrismaService double.
- *
- * The services under test do authorization and state-machine work; none of that
- * needs a real database, and a mock keeps these tests fast and deterministic.
- * What the tests assert on is which Prisma calls were made -- e.g. that editing
- * a DRAFT calls reportVersion.update and NOT reportVersion.create.
- */
+// A hand-rolled PrismaService double.
 export interface MockPrisma {
   user: {
     count: jest.Mock;
@@ -68,8 +61,7 @@ export function createMockPrisma(): MockPrisma {
     achievement: { deleteMany: jest.fn() },
     hoursByType: { deleteMany: jest.fn() },
 
-    // Supports both forms the services use: an array of promises, and an
-    // interactive callback that receives a transaction client.
+    // Supports both forms the services use: an array of promises.
     $transaction: jest.fn(),
     $queryRaw: jest.fn(),
   };
@@ -86,16 +78,11 @@ export function createMockPrisma(): MockPrisma {
   return mock;
 }
 
-/** The cast every spec needs: the mock stands in for the real service. */
+// The cast every spec needs: the mock stands in for the real service.
 export const asPrismaService = (mock: MockPrisma): PrismaService =>
   mock as unknown as PrismaService;
 
-/**
- * Reads the first argument of a mock's first call, typed.
- *
- * jest.Mock.calls is `any[][]`, so every direct index read trips
- * no-unsafe-member-access. This keeps the assertions in the specs clean.
- */
+// Reads the first argument of a mock's first call, typed.
 export function firstCallArg<T>(mock: jest.Mock, callIndex = 0): T {
   const calls = mock.mock.calls as unknown[][];
   return calls[callIndex]?.[0] as T;

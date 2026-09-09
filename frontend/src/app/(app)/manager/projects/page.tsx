@@ -10,9 +10,7 @@ export default async function ProjectsPage() {
   let team;
 
   try {
-    // The list endpoint returns counts only, so each project is re-fetched for
-    // its member list. Fine at this scale; a projects-with-members endpoint
-    // would be the fix if the list ever grew.
+    // The list endpoint returns counts only, so each project is re-fetched for its member list.
     const [summaries, teamOverview] = await Promise.all([getProjects(), getTeam()]);
     projects = await Promise.all(summaries.map((project) => getProject(project.id)));
     team = teamOverview.members;

@@ -14,12 +14,7 @@ import { humanise } from '@/lib/format';
 import { REPORT_STATUSES, type StatusByMember } from '@/lib/types';
 import { ChartCard, STATUS_COLORS } from './chart-card';
 
-/**
- * Stacked bar of report statuses per member.
- *
- * Colours come from the shared STATUS_COLORS map, so a bar segment matches the
- * StatusBadge of the same status elsewhere in the app.
- */
+// Stacked bar of report statuses per member.
 export function StatusByMemberChart({ data }: { data: StatusByMember[] }) {
   const rows = data.map((member) => ({
     // First name only: full names overlap badly on a narrow axis.

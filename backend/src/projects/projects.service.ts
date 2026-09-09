@@ -11,7 +11,7 @@ import {
   UpdateProjectDto,
 } from './dto/project.dto';
 
-/** Postgres unique-constraint violation, surfaced by Prisma. */
+// Postgres unique-constraint violation, surfaced by Prisma.
 const UNIQUE_VIOLATION = 'P2002';
 
 const PROJECT_SELECT = {
@@ -61,8 +61,7 @@ export class ProjectsService {
         select: PROJECT_SELECT,
       });
     } catch (error) {
-      // Let the database decide uniqueness rather than checking first: a
-      // check-then-insert can still lose a race between two requests.
+      // Let the database decide uniqueness rather than checking first.
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === UNIQUE_VIOLATION
@@ -97,19 +96,7 @@ export class ProjectsService {
     }
   }
 
-  /**
-   * Deletes a project only when nothing is filed against it.
-   *
-   * Report.projectId uses onDelete: Restrict, so the database would refuse this
-   * anyway -- but it would surface as an opaque foreign-key error. Counting
-   * first turns that into a 409 that says exactly how many reports are in the
-   * way.
-   *
-   * Cascading was rejected deliberately: reports are the historical record of
-   * work done, and deleting a finished project must not erase the weeks people
-   * spent on it. If a project should disappear from the UI, the right feature
-   * is archiving it, not deleting the reports.
-   */
+  // Deletes a project only when nothing is filed against it.
   async remove(id: string) {
     const project = await this.prisma.project.findUnique({
       where: { id },

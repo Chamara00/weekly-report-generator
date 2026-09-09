@@ -19,13 +19,7 @@ import {
 } from '@/lib/client-api';
 import type { AuthUser, ManagedUser, Role } from '@/lib/types';
 
-/**
- * The user list with inline role assignment.
- *
- * The row for the signed-in manager has its controls disabled: the API refuses
- * self-demotion, self-deactivation and self-deletion, and the UI should not
- * offer an action that is guaranteed to fail.
- */
+// The user list with inline role assignment.
 export function UsersTable({
   users,
   currentUser,
@@ -45,8 +39,7 @@ export function UsersTable({
       toast.success(success);
       router.refresh();
     } catch (caught) {
-      // Surfaces the API's own message: "last active manager", "has filed 6
-      // report(s)", and so on.
+      // Surfaces the API's own message: "last active manager", "has filed 6 report(s)", and so on.
       setError(caught instanceof ApiError ? caught.message : 'Something went wrong.');
     } finally {
       setBusyId(null);

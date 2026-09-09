@@ -7,28 +7,13 @@ import { ChartsQueryDto } from './dto/dashboard-query.dto';
 const DAY_MS = 24 * 60 * 60 * 1000;
 const iso = (date: Date) => date.toISOString().slice(0, 10);
 
-/**
- * Chart data, aggregated in Postgres.
- *
- * Two rules run through every query here:
- *
- * 1. AGGREGATE IN THE DATABASE. Each of these is a GROUP BY over rows that may
- *    span thousands of tasks. Summing them in SQL sends back one row per group;
- *    doing it in Node would stream every task row over the wire, hold them all
- *    in memory, and get slower every week the team reports.
- *
- * 2. ONLY THE CURRENT VERSION. Every query joins ReportVersion through
- *    `r."currentVersionId"`, never through `v."reportId"`. A report with three
- *    versions holds three copies of its tasks, so joining on reportId would
- *    count the same week's hours three times. This is the easiest bug to
- *    introduce in this file, and the join condition is the only thing
- *    preventing it.
- */
+// Chart data aggregated in Postgres. Every query joins v.id = r.currentVersionId, NEVER
+// v.reportId — joining reportId would count a revised report once per version.
 @Injectable()
 export class DashboardChartsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** Optional userId / projectId filters, shared by every query below. */
+  // Optional userId / projectId filters, shared by every query below.
   private filters(query: ChartsQueryDto): Prisma.Sql {
     const parts: Prisma.Sql[] = [];
 
@@ -126,10 +111,7 @@ export class DashboardChartsService {
     };
   }
 
-  /**
-   * Fills in every week in the range, including ones with no reports at all, so
-   * a chart never has to cope with gaps in its x-axis.
-   */
+  // Fills in every week in the range, including ones with no reports at all.
   private buildTrend(
     rows: {
       weekStart: Date;
@@ -157,7 +139,7 @@ export class DashboardChartsService {
     });
   }
 
-  /** One row per member with all four statuses present, zero-filled. */
+  // One row per member with all four statuses present, zero-filled.
   private buildStatusByMember(
     rows: {
       userId: string;
@@ -202,7 +184,7 @@ export class DashboardChartsService {
     return [...byMember.values()].sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  /** Every TaskType present, so a pie chart always has its full set of slices. */
+  // Every TaskType present, so a pie chart always has its full set of slices.
   private buildTaskTypes(rows: { taskType: TaskType; hours: number }[]) {
     return Object.values(TaskType).map((taskType) => ({
       taskType,
@@ -210,13 +192,7 @@ export class DashboardChartsService {
     }));
   }
 
-  /**
-   * Planned vs actually-spent hours per member over recent weeks.
-   *
-   * This is the "who is overloaded?" query. Same current-version join rule as
-   * every other aggregate here: a revised report must not have its hours
-   * counted once per version.
-   */
+  // Planned vs actually-spent hours per member over recent weeks.
   async memberWorkload(weeks = 6) {
     const from = new Date(mondayOf().getTime() - (weeks - 1) * 7 * DAY_MS);
 

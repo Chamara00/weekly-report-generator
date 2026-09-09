@@ -8,13 +8,7 @@ import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { ProjectMembers } from './project-members';
 import type { Project, TeamMemberStats } from '@/lib/types';
 
-/**
- * One project row, which flips between reading and editing IN PLACE.
- *
- * Inline rather than a modal, as the brief asks: the list stays visible while a
- * name is corrected, and the report counts that make a delete fail stay on
- * screen next to the button that will fail.
- */
+// One project row, which flips between reading and editing IN PLACE.
 export function ProjectRow({
   project,
   team,

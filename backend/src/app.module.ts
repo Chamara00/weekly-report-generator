@@ -30,9 +30,8 @@ import { UsersModule } from './users/users.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // ORDER MATTERS. Nest executes global guards in the order declared here:
-    // authenticate first (populates request.user), then authorise by role.
-    // Swapping these would make RolesGuard read an undefined user.
+    // ORDER MATTERS: guards run in declaration order. JwtAuthGuard populates
+    // request.user; RolesGuard then reads its role.
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],

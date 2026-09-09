@@ -11,12 +11,7 @@ import { formatDate } from '@/lib/format';
 
 export const metadata = { title: 'Team member' };
 
-/**
- * One member's profile: their stats plus their full report history.
- *
- * The history reuses QueueTable, so rows link into the same review page the
- * queue uses -- there is no second, nearly-identical table to keep in sync.
- */
+// One member's profile: their stats plus their full report history.
 export default async function TeamMemberPage({
   params,
   searchParams,

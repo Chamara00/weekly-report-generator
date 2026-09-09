@@ -5,13 +5,7 @@ import { Label } from '@/components/ui/label';
 import { humanise } from '@/lib/format';
 import { TASK_TYPES, type HoursByType, type TaskType } from '@/lib/types';
 
-/**
- * Optional hours breakdown.
- *
- * Every TaskType is always rendered, because the backend stores at most one row
- * per type per version (a unique constraint). Rows left at zero are dropped
- * before sending rather than saved as noise.
- */
+// Optional hours breakdown.
 export function HoursByTypeRows({
   entries,
   disabled,
@@ -20,7 +14,7 @@ export function HoursByTypeRows({
 }: {
   entries: HoursByType[];
   disabled: boolean;
-  /** Total hours spent across tasks, shown so a member can sanity-check. */
+  // Total hours spent across tasks, shown so a member can sanity-check.
   taskHoursTotal: number;
   onChange: (entries: HoursByType[]) => void;
 }) {

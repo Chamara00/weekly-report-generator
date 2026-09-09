@@ -1,4 +1,4 @@
-/** Inline validation message, shared by every field in the report form. */
+// Inline validation message, shared by every field in the report form.
 export function FieldError({ message }: { message?: string }) {
   if (!message) return null;
 

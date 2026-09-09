@@ -1,15 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { VersionContentDto } from './dto/version-content.dto';
 
-/**
- * Turns validated DTO content into the nested `create` payload Prisma expects,
- * and copies an existing version's content forward onto a new one.
- *
- * Kept out of the service so the service reads as authorization + state machine
- * rather than as data plumbing.
- */
+// Turns validated DTO content into the nested `create` payload Prisma expects.
 
-/** The child rows of a version, as loaded from the database. */
+// The child rows of a version, as loaded from the database.
 export interface ExistingVersionContent {
   notes: string | null;
   links: string[];
@@ -20,7 +14,7 @@ export interface ExistingVersionContent {
   hoursByType: Prisma.HoursByTypeUncheckedCreateWithoutReportVersionInput[];
 }
 
-/** Strips database-only fields (ids, foreign keys) so a row can be re-created. */
+// Strips database-only fields (ids, foreign keys) so a row can be re-created.
 function stripIds<T extends Record<string, unknown>>(
   rows: T[],
 ): Omit<T, 'id' | 'reportVersionId'>[] {
@@ -32,13 +26,7 @@ function stripIds<T extends Record<string, unknown>>(
   });
 }
 
-/**
- * Merges a content patch over an existing version.
- *
- * An omitted array means "unchanged", which is what makes PATCH partial: a
- * request that only sends `blockers` keeps the tasks from the previous version
- * verbatim. Passing an empty array is different -- that clears the section.
- */
+// Merges a content patch over an existing version.
 export function mergeContent(
   previous: ExistingVersionContent,
   patch: VersionContentDto,
@@ -88,7 +76,7 @@ function normaliseTask(task: NonNullable<VersionContentDto['tasks']>[number]) {
   };
 }
 
-/** Content of a brand-new version, from a DTO alone. */
+// Content of a brand-new version, from a DTO alone.
 export function contentFromDto(dto: VersionContentDto): ExistingVersionContent {
   return mergeContent(
     {
@@ -104,7 +92,7 @@ export function contentFromDto(dto: VersionContentDto): ExistingVersionContent {
   );
 }
 
-/** Normalises rows loaded from Prisma into the shape mergeContent expects. */
+// Normalises rows loaded from Prisma into the shape mergeContent expects.
 export function contentFromVersion(version: {
   notes: string | null;
   links: string[];
@@ -129,7 +117,7 @@ export function contentFromVersion(version: {
   };
 }
 
-/** The nested-create payload for a ReportVersion's children. */
+// The nested-create payload for a ReportVersion's children.
 export function nestedCreateFor(content: ExistingVersionContent) {
   return {
     notes: content.notes,

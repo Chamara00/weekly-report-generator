@@ -1,9 +1,6 @@
 import { Role } from '@prisma/client';
 
-/**
- * Static inputs for the seed. Everything here is deterministic: re-running the
- * seed must produce an identical dataset, so there is no Math.random anywhere.
- */
+// Static inputs for the seed.
 
 export const SEED_PASSWORD = 'password123';
 
@@ -15,23 +12,58 @@ export interface SeedPerson {
 }
 
 export const PEOPLE: SeedPerson[] = [
-  { key: 'elena', name: 'Elena Vasquez', email: 'elena.vasquez@example.com', role: Role.MANAGER },
-  { key: 'tom', name: 'Tom Whitfield', email: 'tom.whitfield@example.com', role: Role.MANAGER },
-  { key: 'priya', name: 'Priya Raman', email: 'priya.raman@example.com', role: Role.TEAM_MEMBER },
-  { key: 'marcus', name: 'Marcus Bell', email: 'marcus.bell@example.com', role: Role.TEAM_MEMBER },
-  { key: 'sofia', name: 'Sofia Lindqvist', email: 'sofia.lindqvist@example.com', role: Role.TEAM_MEMBER },
-  { key: 'daniel', name: 'Daniel Okafor', email: 'daniel.okafor@example.com', role: Role.TEAM_MEMBER },
-  { key: 'yuki', name: 'Yuki Tanaka', email: 'yuki.tanaka@example.com', role: Role.TEAM_MEMBER },
+  {
+    key: 'elena',
+    name: 'Elena Vasquez',
+    email: 'elena.vasquez@example.com',
+    role: Role.MANAGER,
+  },
+  {
+    key: 'tom',
+    name: 'Tom Whitfield',
+    email: 'tom.whitfield@example.com',
+    role: Role.MANAGER,
+  },
+  {
+    key: 'priya',
+    name: 'Priya Raman',
+    email: 'priya.raman@example.com',
+    role: Role.TEAM_MEMBER,
+  },
+  {
+    key: 'marcus',
+    name: 'Marcus Bell',
+    email: 'marcus.bell@example.com',
+    role: Role.TEAM_MEMBER,
+  },
+  {
+    key: 'sofia',
+    name: 'Sofia Lindqvist',
+    email: 'sofia.lindqvist@example.com',
+    role: Role.TEAM_MEMBER,
+  },
+  {
+    key: 'daniel',
+    name: 'Daniel Okafor',
+    email: 'daniel.okafor@example.com',
+    role: Role.TEAM_MEMBER,
+  },
+  {
+    key: 'yuki',
+    name: 'Yuki Tanaka',
+    email: 'yuki.tanaka@example.com',
+    role: Role.TEAM_MEMBER,
+  },
 ];
 
-/** The member who is consistently over capacity -- a story the dashboard tells. */
+// The member who is consistently over capacity -- a story the dashboard tells.
 export const OVERLOADED_MEMBER = 'priya';
 
 export interface SeedProject {
   key: string;
   name: string;
   description: string;
-  /** Member keys assigned via ProjectMember. */
+  // Member keys assigned via ProjectMember.
   members: string[];
 }
 
@@ -68,8 +100,11 @@ export const PROJECTS: SeedProject[] = [
   },
 ];
 
-/** Task names per project, so a report reads like it belongs to its project. */
-export const TASKS_BY_PROJECT: Record<string, { name: string; deliverable: string }[]> = {
+// Task names per project, so a report reads like it belongs to its project.
+export const TASKS_BY_PROJECT: Record<
+  string,
+  { name: string; deliverable: string }[]
+> = {
   'client-a': [
     { name: 'Refund flow API endpoints', deliverable: 'PR #412' },
     { name: 'Payment retry backoff logic', deliverable: 'PR #418' },
@@ -135,11 +170,9 @@ export const PLANNED_TASKS: Record<string, string[]> = {
   ],
 };
 
-/**
- * Blockers. The first entry of every list is the recurring theme -- staging
- * instability -- so the dashboard can surface a blocker affecting the team.
- */
-export const RECURRING_BLOCKER = 'Staging environment keeps dropping the database connection';
+// Blockers. The first entry of every list is the recurring theme -- staging instability.
+export const RECURRING_BLOCKER =
+  'Staging environment keeps dropping the database connection';
 
 export const BLOCKERS: string[] = [
   RECURRING_BLOCKER,
@@ -166,6 +199,9 @@ export const NOTES: string[] = [
 
 export const LINKS: string[][] = [
   ['https://github.com/example/weekly-report-hub/pull/412'],
-  ['https://example.atlassian.net/browse/WRH-118', 'https://example.com/design/checkout'],
+  [
+    'https://example.atlassian.net/browse/WRH-118',
+    'https://example.com/design/checkout',
+  ],
   [],
 ];

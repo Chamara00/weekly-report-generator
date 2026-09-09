@@ -5,12 +5,7 @@ import { StatusBadge } from '@/components/shared/status-badge';
 import { formatDate, formatDateTime } from '@/lib/format';
 import type { ReportListItem } from '@/lib/types';
 
-/**
- * "Where does this week stand?" -- the first thing a member should see.
- *
- * Four distinct states: nothing started, a draft in progress, submitted and
- * waiting, or approved. Each gets its own call to action.
- */
+// "Where does this week stand?" -- the first thing a member should see.
 export function ThisWeekCard({
   report,
   weekStart,

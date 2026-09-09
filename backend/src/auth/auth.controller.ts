@@ -44,11 +44,7 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  /**
-   * No @Public(), so the global JwtAuthGuard protects it. By the time this
-   * method runs, JwtStrategy.validate() has already re-read the user from the
-   * database, so there is nothing left to do but return it.
-   */
+  // No @Public(), so the global JwtAuthGuard protects it.
   @Get('me')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Return the user the current token belongs to' })

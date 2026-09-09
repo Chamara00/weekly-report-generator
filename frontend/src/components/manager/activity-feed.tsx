@@ -10,13 +10,7 @@ const DOT: Record<ActivityItem['type'], string> = {
   REQUEST_CHANGES: 'bg-amber-500',
 };
 
-/**
- * Recent submissions and review decisions.
- *
- * This feed intentionally includes superseded versions: unlike the charts, it
- * is a log of things that happened, and a report revised three times really was
- * submitted three times.
- */
+// Recent submissions and review decisions.
 export function ActivityFeed({ items }: { items: ActivityItem[] }) {
   return (
     <Card>

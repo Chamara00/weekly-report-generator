@@ -19,8 +19,7 @@ export class ChatMessageDto {
   @ApiProperty({ example: 'Who is overloaded this month?' })
   @IsString()
   @IsNotEmpty()
-  // A hard cap: this text is billed by the token and forwarded to a third
-  // party, so an unbounded field is both a cost and a data risk.
+  // A hard cap: this text is billed by the token and forwarded to a third party.
   @MaxLength(2000)
   text!: string;
 }

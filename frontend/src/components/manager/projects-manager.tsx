@@ -18,13 +18,7 @@ import {
 import type { Project, TeamMemberStats } from '@/lib/types';
 import { ProjectRow } from './project-row';
 
-/**
- * Project CRUD as a page: a create form, then the list with inline editing.
- *
- * Errors are shown verbatim from the API. That matters most for delete, where
- * the backend answers 409 with the exact report count -- surfacing "3 report(s)
- * are filed against it" is far more useful than "could not delete".
- */
+// Project CRUD as a page: a create form, then the list with inline editing.
 export function ProjectsManager({
   projects,
   team,

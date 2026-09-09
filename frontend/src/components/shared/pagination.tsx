@@ -10,12 +10,7 @@ interface PaginationProps {
   limit: number;
 }
 
-/**
- * Page controls that write to the URL rather than to component state.
- *
- * Paging is therefore shareable, survives a refresh, and lets the server
- * component re-fetch with the new page -- no client-side data store involved.
- */
+// Page controls that write to the URL rather than to component state.
 export function Pagination({ page, totalPages, total, limit }: PaginationProps) {
   const router = useRouter();
   const pathname = usePathname();

@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { SelectField } from '@/components/shared/select-field';
 
-/** Chooses which section of the report to line up across the team. */
+// Chooses which section of the report to line up across the team.
 export function SectionPicker({ section }: { section: string }) {
   const router = useRouter();
   const pathname = usePathname();

@@ -5,13 +5,7 @@ import { EmptyState } from '@/components/shared/empty-state';
 import { formatDateTime, formatWeek } from '@/lib/format';
 import type { ReportListItem } from '@/lib/types';
 
-/**
- * Recent activity on the member's own reports.
- *
- * Built from their report list rather than a dedicated feed endpoint: the
- * activity API is manager-scoped, and a member's own history is exactly this
- * list ordered by when it last changed.
- */
+// Recent activity on the member's own reports.
 export function RecentReports({ reports }: { reports: ReportListItem[] }) {
   return (
     <Card>

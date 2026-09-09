@@ -1,29 +1,26 @@
 import { PrismaClient, ReportStatus, Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { OVERLOADED_MEMBER, PEOPLE, PROJECTS, SEED_PASSWORD } from './seed/data';
+import {
+  OVERLOADED_MEMBER,
+  PEOPLE,
+  PROJECTS,
+  SEED_PASSWORD,
+} from './seed/data';
 import { buildVersionContent } from './seed/content';
 import { REPORT_PLAN, buildReviewSteps } from './seed/plan';
-import { daysAfter, formatDate, recentWeeks, submissionTime } from './seed/weeks';
+import {
+  daysAfter,
+  formatDate,
+  recentWeeks,
+  submissionTime,
+} from './seed/weeks';
 
-/**
- * Deterministic, idempotent seed. Running it twice produces the same dataset:
- * everything is deleted first, and no value depends on Math.random.
- *
- * Run with:  npx prisma db seed
- */
+// Deterministic, idempotent seed.
 
 const prisma = new PrismaClient();
 const WEEK_COUNT = 6;
 
-/**
- * Wipe every table before inserting.
- *
- * Deleting the two roots (User, Project) would cascade to most of this, but the
- * deletes are spelled out child-first anyway: it is explicit about the
- * dependency order, and it does not rely on a cascade rule staying as it is.
- * Report is emptied before ReportVersion because Report.currentVersionId points
- * at a version.
- */
+// Wipe every table before inserting.
 async function reset(): Promise<void> {
   await prisma.$transaction([
     prisma.reviewComment.deleteMany(),
@@ -41,8 +38,7 @@ async function reset(): Promise<void> {
 }
 
 async function seedPeople(): Promise<Map<string, string>> {
-  // One hash for everyone: bcrypt is intentionally slow, and hashing the same
-  // password seven times would dominate the seed's runtime.
+  // One hash for everyone: bcrypt is intentionally slow.
   const passwordHash = await bcrypt.hash(SEED_PASSWORD, 10);
   const ids = new Map<string, string>();
 
@@ -62,7 +58,9 @@ async function seedPeople(): Promise<Map<string, string>> {
   return ids;
 }
 
-async function seedProjects(userIds: Map<string, string>): Promise<Map<string, string>> {
+async function seedProjects(
+  userIds: Map<string, string>,
+): Promise<Map<string, string>> {
   const ids = new Map<string, string>();
 
   for (const project of PROJECTS) {
@@ -84,18 +82,7 @@ async function seedProjects(userIds: Map<string, string>): Promise<Map<string, s
   return ids;
 }
 
-/**
- * Creates one report, all of its versions, and its review trail.
- *
- * Report.currentVersionId and ReportVersion.reportId reference each other, so
- * neither row can be written with the other's id already in hand. The write is
- * therefore a two-step inside a single transaction:
- *   1. create the Report with currentVersionId still null,
- *   2. create each version (with its content) against that report,
- *   3. update the Report to point at the last version and set its real status.
- * All three commit together, so the database is never left with a report that
- * points at nothing.
- */
+// Creates one report, all of its versions, and its review trail.
 async function seedReport(
   entry: (typeof REPORT_PLAN)[number],
   index: number,
@@ -124,7 +111,11 @@ async function seedReport(
       // Step 2: one immutable snapshot per version.
       const versionIds: string[] = [];
 
-      for (let versionNumber = 1; versionNumber <= entry.versions; versionNumber += 1) {
+      for (
+        let versionNumber = 1;
+        versionNumber <= entry.versions;
+        versionNumber += 1
+      ) {
         const content = buildVersionContent({
           memberKey: entry.memberKey,
           projectKey: entry.projectKey,
@@ -132,12 +123,14 @@ async function seedReport(
           versionNumber,
         });
 
-        // A draft has never been submitted, so submittedAt stays null. The
-        // overloaded member submits after the week has closed, which is what
-        // gives the compliance panel a non-zero "late" count.
+        // A draft has never been submitted, so submittedAt stays null.
         const submittedAt = isDraft
           ? null
-          : submissionTime(week, versionNumber, entry.memberKey === OVERLOADED_MEMBER);
+          : submissionTime(
+              week,
+              versionNumber,
+              entry.memberKey === OVERLOADED_MEMBER,
+            );
 
         const version = await tx.reportVersion.create({
           data: {
@@ -211,8 +204,8 @@ async function main(): Promise<void> {
 
   const userIds = await seedPeople();
   const projectIds = await seedProjects(userIds);
-  const managerIds = PEOPLE.filter((p) => p.role === Role.MANAGER).map(
-    (p) => userIds.get(p.key)!,
+  const managerIds = PEOPLE.filter((p) => p.role === Role.MANAGER).map((p) =>
+    userIds.get(p.key)!,
   );
   const weeks = recentWeeks(WEEK_COUNT);
 

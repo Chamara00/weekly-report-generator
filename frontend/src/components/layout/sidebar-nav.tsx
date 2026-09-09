@@ -6,16 +6,13 @@ import { cn } from '@/lib/utils';
 import { navItemsFor } from './nav-items';
 import type { Role } from '@/lib/types';
 
-/**
- * The link list itself. A client component only because it needs usePathname
- * to highlight the active route.
- */
+// The link list itself.
 export function SidebarNav({
   role,
   onNavigate,
 }: {
   role: Role;
-  /** Lets the mobile drawer close itself when a link is tapped. */
+  // Lets the mobile drawer close itself when a link is tapped.
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
@@ -23,8 +20,7 @@ export function SidebarNav({
   return (
     <nav className="flex flex-col gap-1" aria-label="Main">
       {navItemsFor(role).map((item) => {
-        // "/reports/new" must not light up "/reports", so exact match wins for
-        // the deeper route and prefix match handles detail pages.
+        // "/reports/new" must not light up "/reports".
         const isActive =
           pathname === item.href ||
           (item.href !== '/reports/new' &&

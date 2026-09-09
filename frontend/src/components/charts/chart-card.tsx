@@ -1,14 +1,7 @@
 import type { ReactNode } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-/**
- * Shared frame for every chart: title, optional description, fixed height and
- * an explicit "no data" state.
- *
- * The API zero-fills its structures, so an empty week arrives as real rows of
- * zeros rather than an empty array -- `isEmpty` is computed by each caller from
- * the totals, which is what stops a chart rendering an axis with nothing on it.
- */
+// Shared frame for every chart: title, optional description.
 export function ChartCard({
   title,
   description,
@@ -48,7 +41,7 @@ export function ChartCard({
   );
 }
 
-/** Palette shared by every chart so a member keeps one colour across views. */
+// Palette shared by every chart so a member keeps one colour across views.
 export const CHART_COLORS = [
   '#2563eb',
   '#16a34a',

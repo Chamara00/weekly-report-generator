@@ -6,12 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatDate, mondayOf, weekEndFor } from '@/lib/format';
 
-/**
- * Week picker that drives a whole page through the URL.
- *
- * Steps in whole weeks rather than free days, because every figure behind it is
- * keyed on a Monday -- the API rejects any other day.
- */
+// Week picker that drives a whole page through the URL.
 export function WeekSelector({ weekStart }: { weekStart: string }) {
   const router = useRouter();
   const pathname = usePathname();

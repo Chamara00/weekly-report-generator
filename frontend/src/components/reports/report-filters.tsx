@@ -10,13 +10,7 @@ import { REPORT_STATUSES, type Project } from '@/lib/types';
 
 const ANY = 'ANY';
 
-/**
- * Filters that write straight to the URL query string.
- *
- * The server component reads those same params and forwards them to the API's
- * existing status / projectId / weekStartFrom / weekStartTo filters, so the
- * filtering happens in Postgres -- not by fetching everything and hiding rows.
- */
+// Filters that write straight to the URL query string.
 export function ReportFilters({ projects }: { projects: Project[] }) {
   const router = useRouter();
   const pathname = usePathname();

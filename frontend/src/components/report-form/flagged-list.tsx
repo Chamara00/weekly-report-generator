@@ -11,13 +11,7 @@ interface FlaggedItem {
   flagged: boolean;
 }
 
-/**
- * Blockers and achievements: a list where exactly one item can be flagged.
- *
- * The flag is a RADIO group, not checkboxes. The backend rejects more than one
- * flagged item per report (@AtMostOneFlag), so the control that cannot express
- * an invalid state is the right one -- selecting a new key item clears the old.
- */
+// Blockers and achievements: a list where exactly one item can be flagged.
 export function FlaggedList({
   legend,
   description,
@@ -33,7 +27,7 @@ export function FlaggedList({
   description: string;
   items: FlaggedItem[];
   keyLabel: string;
-  /** Matches the API's error paths, e.g. "blockers". */
+  // Matches the API's error paths, e.g.
   fieldPrefix: string;
   errors: Record<string, string>;
   disabled: boolean;

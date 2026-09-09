@@ -7,15 +7,7 @@ import { DashboardChartsService } from '../dashboard/dashboard-charts.service';
 import { ReviewService } from '../review/review.service';
 import { DashboardSection } from '../dashboard/dto/dashboard-query.dto';
 
-/**
- * The tools the assistant may call.
- *
- * Every one delegates to a service that already exists and is already
- * access-controlled -- the assistant gets no privileged path of its own, and
- * nothing here reaches for Prisma directly. Results are deliberately compacted
- * before being handed back to the model: a full report payload is mostly ids
- * and timestamps that cost tokens and help nothing.
- */
+// The tools the assistant may call.
 @Injectable()
 export class AssistantTools {
   constructor(
@@ -24,7 +16,7 @@ export class AssistantTools {
     private readonly review: ReviewService,
   ) {}
 
-  /** Schemas the model sees. Descriptions are the prompt for tool choice. */
+  // Schemas the model sees.
   readonly declarations: FunctionDeclaration[] = [
     {
       name: 'get_week_summary',
@@ -151,7 +143,7 @@ export class AssistantTools {
     },
   ];
 
-  /** Runs one tool call and returns a compact result for the model. */
+  // Runs one tool call and returns a compact result for the model.
   async run(name: string, args: Record<string, unknown>): Promise<unknown> {
     switch (name) {
       case 'get_week_summary':
@@ -278,7 +270,7 @@ export class AssistantTools {
     return typeof value === 'string' && value.length > 0 ? value : undefined;
   }
 
-  /** Only accepts YYYY-MM-DD; anything else is dropped rather than passed on. */
+  // Only accepts YYYY-MM-DD; anything else is dropped rather than passed on.
   private asDate(value: unknown): string | undefined {
     const text = this.asString(value);
     return text && /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : undefined;

@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/shared/empty-state';
 import { StatusBadge } from '@/components/shared/status-badge';
 import type { TeamMemberStats } from '@/lib/types';
 
-/** "Has this week's report arrived?" as a single glanceable cell. */
+// "Has this week's report arrived?" as a single glanceable cell.
 function ThisWeekCell({ member }: { member: TeamMemberStats }) {
   if (member.currentWeek.status) {
     return <StatusBadge status={member.currentWeek.status} />;

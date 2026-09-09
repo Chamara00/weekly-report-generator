@@ -7,12 +7,7 @@ import { mondayOf } from '@/lib/format';
 
 export const metadata = { title: 'New report' };
 
-/**
- * Server component: loads the project list, then hands off to the client form.
- *
- * ?weekStart= lets the dashboard's "Start this week's report" button preselect
- * the week; otherwise it defaults to the current Monday.
- */
+// Server component: loads the project list, then hands off to the client form.
 export default async function NewReportPage({
   searchParams,
 }: {

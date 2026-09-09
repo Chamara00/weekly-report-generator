@@ -4,16 +4,7 @@ import {
   registerDecorator,
 } from 'class-validator';
 
-/**
- * Validates that at most one item in an array has the named boolean flag set.
- *
- * Used for "exactly one key blocker" and "exactly one key achievement": the
- * schema cannot express this (it would need a partial unique index per
- * version), so it is enforced at the edge instead.
- *
- * Zero flagged items is allowed -- a report may legitimately have blockers that
- * are all routine.
- */
+// Validates that at most one item in an array has the named boolean flag set.
 export function AtMostOneFlag(
   flag: string,
   validationOptions?: ValidationOptions,

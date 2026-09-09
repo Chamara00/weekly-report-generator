@@ -19,15 +19,7 @@ import type {
   TeamOverview,
 } from './types';
 
-/**
- * Server-side data fetching.
- *
- * The JWT lives in an httpOnly cookie, so browser JavaScript cannot read it.
- * These functions run on the server, pull the cookie out of the request, and
- * pass it to Nest as `Authorization: Bearer <token>` -- which is the only form
- * the backend's JwtStrategy accepts. Client components mutate through
- * /api/proxy instead, which does the same translation for writes.
- */
+// Server-side data fetching.
 
 async function token(): Promise<string | undefined> {
   const store = await cookies();
@@ -37,13 +29,12 @@ async function token(): Promise<string | undefined> {
 async function serverFetch<T>(path: string): Promise<T> {
   return apiFetch<T>(path, {
     token: await token(),
-    // Always hit the API: reports change constantly and a cached dashboard
-    // would show stale statuses right after a submit.
+    // Always hit the API: reports change constantly and a cached dashboard would show stale statuses.
     cache: 'no-store',
   });
 }
 
-/** Turns a partial query object into a query string, skipping empty values. */
+// Turns a partial query object into a query string, skipping empty values.
 export function toQueryString(
   query: Record<string, string | number | undefined> | ReportQuery,
 ): string {
@@ -82,13 +73,11 @@ export function getReportVersion(
   return serverFetch<ReportVersion>(`/reports/${reportId}/versions/${versionId}`);
 }
 
-/** Re-exported so pages can narrow on status codes without a second import. */
+// Re-exported so pages can narrow on status codes without a second import.
 export { ApiError };
 
-// ---------------------------------------------------------------------------
-// Manager-only reads. RolesGuard rejects these for a TEAM_MEMBER, so the pages
-// that call them live behind /manager, which middleware also guards.
-// ---------------------------------------------------------------------------
+
+// Manager-only reads.
 
 export function getTeamReports(
   query: ReportQuery = {},
@@ -149,7 +138,7 @@ export function getUsers(query: {
   return serverFetch<Paginated<ManagedUser>>(`/users${toQueryString(query)}`);
 }
 
-/** One project including its assigned members. */
+// One project including its assigned members.
 export function getProject(id: string): Promise<
   Project & { members: { user: { id: string; name: string; email: string; role: Role } }[] }
 > {
@@ -158,7 +147,7 @@ export function getProject(id: string): Promise<
   >(`/projects/${id}`);
 }
 
-/** Whether the backend has a Gemini key, so the UI can hide the widget. */
+// Whether the backend has a Gemini key, so the UI can hide the widget.
 export async function getAssistantStatus(): Promise<{ configured: boolean }> {
   try {
     return await serverFetch<{ configured: boolean }>('/manager/assistant/status');

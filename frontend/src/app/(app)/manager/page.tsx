@@ -18,7 +18,7 @@ import { mondayOf } from '@/lib/format';
 
 export const metadata = { title: 'Team overview' };
 
-/** All four panels for one week, fetched in parallel on the server. */
+// All four panels for one week, fetched in parallel on the server.
 async function DashboardContent({ weekStart }: { weekStart: string }) {
   try {
     const [summary, charts, activity] = await Promise.all([
@@ -95,8 +95,7 @@ export default async function ManagerDashboardPage({
 
       <WeekSelector weekStart={week} />
 
-      {/* Keyed on the week so switching weeks shows skeletons rather than
-          holding the previous week's numbers on screen. */}
+      {/* Keyed on the week so switching weeks shows skeletons rather than holding the previous week's. */}
       <Suspense key={week} fallback={<CardsSkeleton />}>
         <DashboardContent weekStart={week} />
       </Suspense>

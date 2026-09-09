@@ -14,7 +14,7 @@ export const metadata = { title: 'My reports' };
 
 type SearchParams = Record<string, string | undefined>;
 
-/** Reads filters from the URL and hands them straight to the API. */
+// Reads filters from the URL and hands them straight to the API.
 async function ReportsList({ params }: { params: SearchParams }) {
   const page = Number(params.page ?? 1);
 
@@ -72,8 +72,7 @@ export default async function ReportsPage({
         }
       />
 
-      {/* Keyed on the filters so changing one remounts the boundary and shows
-          the skeleton, instead of holding the old table until the fetch ends. */}
+      {/* Keyed on the filters so changing one remounts the boundary and shows the skeleton. */}
       <Suspense key={JSON.stringify(params)} fallback={<TableSkeleton rows={6} />}>
         <ReportsList params={params} />
       </Suspense>

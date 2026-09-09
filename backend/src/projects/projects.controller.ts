@@ -24,10 +24,7 @@ import {
 } from './dto/project.dto';
 import { ProjectsService } from './projects.service';
 
-/**
- * Reads are open to any authenticated user -- a team member needs the project
- * list to tag a report. Every write carries @Roles(Role.MANAGER).
- */
+// Reads are open to any authenticated user.
 @ApiTags('projects')
 @ApiBearerAuth()
 @Controller('projects')

@@ -20,14 +20,7 @@ import type { AuthenticatedUser } from '../auth/types/authenticated-user.type';
 import { AssistantService } from './assistant.service';
 import { ChatRequestDto } from './dto/chat.dto';
 
-/**
- * Manager-only AI assistant.
- *
- * @Roles(Role.MANAGER) is not a convenience here, it is the privacy boundary:
- * the assistant can read any team member's report content through its tools, so
- * exposing it to a team member would hand them exactly the data the rest of the
- * app spends its guards keeping private.
- */
+// Manager-only AI assistant.
 @ApiTags('assistant')
 @ApiBearerAuth()
 @ApiForbiddenResponse({ description: 'Team members cannot use the assistant' })

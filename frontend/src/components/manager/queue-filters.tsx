@@ -21,11 +21,7 @@ const FILTER_KEYS = [
   'weekStartTo',
 ];
 
-/**
- * The queue's filters. Every one writes to the URL, so a filtered view is
- * shareable and survives a refresh -- and the server component re-runs the
- * query against the API's own filters rather than hiding rows client-side.
- */
+// The queue's filters.
 export function QueueFilters({
   members,
   projects,
@@ -47,13 +43,7 @@ export function QueueFilters({
     router.push(`${pathname}?${params.toString()}`);
   }
 
-  /**
-   * Jumps the range to one specific week.
-   *
-   * §4 asks for "all team members' reports for a selected week"; the API
-   * filters on a range, so a single week is just from == to. These buttons make
-   * that one click instead of two date pickers.
-   */
+  // Jumps the range to one specific week.
   function selectWeek(offsetWeeks: number) {
     const monday = new Date(mondayOf());
     monday.setUTCDate(monday.getUTCDate() + offsetWeeks * 7);

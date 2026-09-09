@@ -6,12 +6,7 @@ import { StatusBadge } from '@/components/shared/status-badge';
 import { formatDateTime, formatWeek } from '@/lib/format';
 import type { ReportListItem } from '@/lib/types';
 
-/**
- * The review queue table.
- *
- * Same shared DataTable as the member's history, with a member column added and
- * a mobile card renderer, since this table has six columns.
- */
+// The review queue table.
 export function QueueTable({ reports }: { reports: ReportListItem[] }) {
   const columns: Column<ReportListItem>[] = [
     {

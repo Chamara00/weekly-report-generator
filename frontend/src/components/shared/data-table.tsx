@@ -15,9 +15,9 @@ import { cn } from '@/lib/utils';
 export interface Column<T> {
   key: string;
   header: string;
-  /** Renders the cell. Given the whole row, so it can combine fields. */
+  // Renders the cell.
   cell: (row: T) => ReactNode;
-  /** Hidden below `sm` -- used to keep tables readable on a phone. */
+  // Hidden below `sm` -- used to keep tables readable on a phone.
   hideOnMobile?: boolean;
   className?: string;
 }
@@ -25,26 +25,16 @@ export interface Column<T> {
 interface DataTableProps<T> {
   columns: Column<T>[];
   rows: T[];
-  /** Row identity; also the row's link target when `hrefFor` is given. */
+  // Row identity; also the row's link target when `hrefFor` is given.
   getRowId: (row: T) => string;
-  /** Makes rows clickable. Kept as navigation rather than an onClick handler. */
+  // Makes rows clickable.
   hrefFor?: (row: T) => string;
   emptyState?: ReactNode;
-  /**
-   * Rendered instead of the table below `sm`. A seven-column table cannot be
-   * made readable on a phone by scrolling it sideways, so lists that need to
-   * work on mobile pass a card renderer here.
-   */
+  // Rendered instead of the table below `sm`.
   mobileCard?: (row: T) => ReactNode;
 }
 
-/**
- * One generic table for every list in the app.
- *
- * Columns are passed in rather than hard-coded so the member's report history,
- * the manager's review queue and the team list all share this component and
- * therefore share row height, hover behaviour and mobile column-hiding.
- */
+// One generic table for every list in the app.
 export function DataTable<T>({
   columns,
   rows,

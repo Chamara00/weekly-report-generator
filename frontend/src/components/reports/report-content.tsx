@@ -11,13 +11,7 @@ import {
 import { humanise } from '@/lib/format';
 import type { ReportVersion } from '@/lib/types';
 
-/**
- * Renders one version's content, read-only.
- *
- * Used by the detail page for the current version AND for any past version the
- * reader selects, so both look identical -- which is the point of version
- * history: you see exactly what the manager saw.
- */
+// Renders one version's content, read-only.
 export function ReportContent({ version }: { version: ReportVersion }) {
   const totalPlanned = version.tasks.reduce((sum, task) => sum + task.hoursPlanned, 0);
   const totalSpent = version.tasks.reduce((sum, task) => sum + task.hoursSpent, 0);

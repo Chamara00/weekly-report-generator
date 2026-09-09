@@ -10,7 +10,7 @@ import { AssistantTools } from './assistant.tools';
 import { ChatRequestDto } from './dto/chat.dto';
 import type { AuthenticatedUser } from '../auth/types/authenticated-user.type';
 
-/** How many tool round trips one question may take before we stop. */
+// How many tool round trips one question may take before we stop.
 const MAX_TOOL_ROUNDS = 5;
 
 const SYSTEM_PROMPT = `You are the assistant inside Weekly Report Hub, an internal
@@ -28,14 +28,7 @@ Rules:
 - Today's date is {TODAY}. A reporting week runs Monday to Sunday, and weeks are
   identified by their Monday.`;
 
-/**
- * The AI assistant, backed by Gemini with function calling.
- *
- * The model never sees the database. It sees a set of tool schemas; when it
- * asks for one, this service runs the matching application service and feeds
- * the result back. That means the assistant inherits the same data boundaries
- * as the rest of the app rather than getting a private door to the data.
- */
+// The AI assistant, backed by Gemini with function calling.
 @Injectable()
 export class AssistantService {
   private readonly logger = new Logger(AssistantService.name);
@@ -47,8 +40,7 @@ export class AssistantService {
     private readonly tools: AssistantTools,
   ) {
     const apiKey = this.config.get<string>('GEMINI_API_KEY');
-    // Absent key is not a boot failure: the rest of the app must run without
-    // it, and the endpoint answers 503 with an explanation instead.
+    // Absent key is not a boot failure: the rest of the app must run without it.
     this.client = apiKey ? new GoogleGenAI({ apiKey }) : null;
     this.model = this.config.get<string>('GEMINI_MODEL', 'gemini-2.5-flash');
   }
@@ -99,8 +91,7 @@ export class AssistantService {
         };
       }
 
-      // Keep the model's own turn in the transcript: the next request has to
-      // show the call it made before it will accept the result.
+      // Keep the model's own turn in the transcript.
       contents.push({
         role: 'model',
         parts: calls.map((call) => ({ functionCall: call })),
@@ -115,8 +106,7 @@ export class AssistantService {
             const result = await this.tools.run(name, call.args ?? {});
             return { name, response: { result } };
           } catch (error) {
-            // A failing tool must not kill the conversation -- hand the model
-            // the error so it can explain or try a different approach.
+            // A failing tool must not kill the conversation.
             this.logger.warn(
               `Tool ${name} failed for manager ${manager.id}: ${String(error)}`,
             );

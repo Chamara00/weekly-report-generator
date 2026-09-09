@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-/** Small labelled number used across the member and manager dashboards. */
+// Small labelled number used across the member and manager dashboards.
 export function StatCard({
   label,
   value,

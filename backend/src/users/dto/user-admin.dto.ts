@@ -14,14 +14,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-/**
- * Manager-only user administration.
- *
- * This is the one place a role can be assigned. Public registration always
- * creates a TEAM_MEMBER (see RegisterDto), so promoting someone to MANAGER is
- * deliberately an authenticated, role-gated action rather than something a
- * signup form can do.
- */
+// Manager-only user administration.
 export class InviteUserDto {
   @ApiProperty({ example: 'new.member@example.com' })
   @IsEmail({}, { message: 'email must be a valid email address' })

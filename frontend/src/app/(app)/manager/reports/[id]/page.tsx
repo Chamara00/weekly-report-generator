@@ -13,13 +13,7 @@ import { formatWeek } from '@/lib/format';
 
 export const metadata = { title: 'Review report' };
 
-/**
- * The manager's read-and-decide view.
- *
- * Content is rendered by the same read-only ReportContent the member sees, so
- * there is literally no editing affordance on this page -- the only writes
- * available are the two buttons in ReviewPanel.
- */
+// The manager's read-and-decide view.
 export default async function ReviewReportPage({
   params,
   searchParams,

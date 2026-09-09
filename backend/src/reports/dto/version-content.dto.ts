@@ -18,7 +18,7 @@ import {
 } from 'class-validator';
 import { AtMostOneFlag } from '../../common/validators/at-most-one-flag.validator';
 
-/** One task the member worked on during the week. */
+// One task the member worked on during the week.
 export class TaskDto {
   @ApiProperty({ example: 'Refund flow API endpoints' })
   @IsString()
@@ -105,17 +105,7 @@ export class HoursByTypeDto {
   hours!: number;
 }
 
-/**
- * The editable content of a report version.
- *
- * Every array is optional. On create, an omitted array means "empty"; on
- * update, it means "leave this section exactly as it was", which is what makes
- * a PATCH of only the blockers possible.
- *
- * @Type() is what turns the incoming plain JSON into these classes -- without
- * it @ValidateNested has nothing with decorators to inspect and the nested
- * rules silently pass.
- */
+// The editable content of a report version.
 export class VersionContentDto {
   @ApiPropertyOptional({ type: [TaskDto] })
   @IsOptional()

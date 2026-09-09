@@ -17,13 +17,7 @@ import {
   WeekQueryDto,
 } from './dto/dashboard-query.dto';
 
-/**
- * Read-only analytics over the whole team. @Roles(Role.MANAGER) on the class
- * covers every route, current and future.
- *
- * Split across three services because the three concerns have genuinely
- * different shapes: counts, grouped aggregates, and an event feed.
- */
+// Read-only analytics over the whole team.
 @ApiTags('dashboard')
 @ApiBearerAuth()
 @ApiForbiddenResponse({

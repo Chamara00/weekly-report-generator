@@ -5,14 +5,13 @@ import { humanise } from '@/lib/format';
 import type { TaskType } from '@/lib/types';
 import { CHART_COLORS, ChartCard } from './chart-card';
 
-/** Team-wide split of hours across task types. */
+// Team-wide split of hours across task types.
 export function TaskTypeChart({
   data,
 }: {
   data: { taskType: TaskType; hours: number }[];
 }) {
-  // Zero slices are dropped from the pie itself (a 0% wedge is invisible but
-  // still occupies a legend entry and a tooltip target).
+  // Zero slices are dropped: a 0% wedge is invisible but would still take a legend entry.
   const rows = data
     .filter((entry) => entry.hours > 0)
     .map((entry) => ({ name: humanise(entry.taskType), value: entry.hours }));

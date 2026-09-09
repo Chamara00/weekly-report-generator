@@ -12,13 +12,7 @@ import { formatWeek } from '@/lib/format';
 
 export const metadata = { title: 'Report' };
 
-/**
- * Read-only report detail, used by members and managers alike.
- *
- * ?version=<id> switches the content panel to a past version, fetched through
- * the dedicated versions endpoint. The review trail and history list always
- * show the whole story regardless of which version is on screen.
- */
+// Read-only report detail, used by members and managers alike.
 export default async function ReportDetailPage({
   params,
   searchParams,
@@ -35,8 +29,7 @@ export default async function ReportDetailPage({
   try {
     [report, user] = await Promise.all([getReport(id), getCurrentUser()]);
   } catch (error) {
-    // The API answers 404 both for "no such report" and "not yours" -- it
-    // deliberately does not distinguish, and neither does this page.
+    // The API answers 404 both for "no such report" and "not yours".
     if (error instanceof ApiError && error.status === 404) {
       notFound();
     }
@@ -61,8 +54,7 @@ export default async function ReportDetailPage({
       shownVersion = await getReportVersion(id, requestedVersionId);
       isViewingPast = true;
     } catch {
-      // A bad version id falls back to the current version rather than erroring
-      // the whole page.
+      // A bad version id falls back to the current version rather than erroring the whole page.
       shownVersion = report.currentVersion;
     }
   }

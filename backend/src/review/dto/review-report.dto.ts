@@ -3,14 +3,7 @@ import { ReviewAction } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
 
-/**
- * A manager's decision on a submitted report.
- *
- * Note what is absent: no status field and nothing from the report's content.
- * The manager chooses an action; the service derives the resulting status. A
- * manager can never write report content, so there is nothing here to write it
- * with.
- */
+// A manager's decision on a submitted report.
 export class ReviewReportDto {
   @ApiProperty({ enum: ReviewAction })
   @IsEnum(ReviewAction)
@@ -23,14 +16,8 @@ export class ReviewReportDto {
       'for APPROVE.',
     example: 'Please add the actual hours spent before I sign this off.',
   })
-  // @ValidateIf makes the rules below apply only to REQUEST_CHANGES; for
-  // APPROVE the property is skipped entirely and may be omitted.
-  //
-  // Note there is deliberately NO @IsOptional() here. @IsOptional() skips every
-  // other validator whenever the value is undefined, which would let
-  // REQUEST_CHANGES through with no comment at all -- exactly what this rule
-  // exists to prevent. @ValidateIf already provides the "optional for APPROVE"
-  // half.
+  // Required only for REQUEST_CHANGES. Deliberately no @IsOptional(): it would
+  // skip this rule whenever comment is undefined, which is the case to catch.
   @ValidateIf(
     (dto: ReviewReportDto) => dto.action === ReviewAction.REQUEST_CHANGES,
   )

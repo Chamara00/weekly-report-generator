@@ -8,12 +8,7 @@ import { StatusBadge } from '@/components/shared/status-badge';
 import { formatDateTime, formatWeek } from '@/lib/format';
 import type { ReportListItem } from '@/lib/types';
 
-/**
- * Column definitions for the member's report history.
- *
- * A thin client wrapper around the shared DataTable: the columns need render
- * functions, which cannot cross the server/client boundary as props.
- */
+// Column definitions for the member's report history.
 export function ReportsTable({ reports }: { reports: ReportListItem[] }) {
   const columns: Column<ReportListItem>[] = [
     {

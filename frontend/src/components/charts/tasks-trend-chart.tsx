@@ -16,18 +16,11 @@ import { formatDate } from '@/lib/format';
 import type { TrendPoint } from '@/lib/types';
 import { CHART_COLORS, ChartCard } from './chart-card';
 
-/**
- * Completed tasks per week.
- *
- * Two modes: one line for the team total, or one line per member. The API
- * returns both shapes in a single response, so toggling is local state with no
- * extra request.
- */
+// Completed tasks per week.
 export function TasksTrendChart({ trend }: { trend: TrendPoint[] }) {
   const [perMember, setPerMember] = useState(false);
 
-  // Every member who appears in any week, so a member missing from one week
-  // still gets a line (rendered as a gap rather than vanishing).
+  // Every member who appears in any week.
   const members = Array.from(
     new Map(
       trend.flatMap((point) => point.byMember.map((m) => [m.userId, m.name] as const)),

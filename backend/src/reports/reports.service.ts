@@ -23,7 +23,7 @@ import {
   VERSION_CONTENT_SELECT,
 } from './reports.select';
 
-/** Statuses whose content the owner is still allowed to change. */
+// Statuses whose content the owner is still allowed to change.
 const EDITABLE_STATUSES: ReportStatus[] = [
   ReportStatus.DRAFT,
   ReportStatus.NEEDS_CORRECTION,
@@ -33,21 +33,10 @@ const EDITABLE_STATUSES: ReportStatus[] = [
 export class ReportsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // -------------------------------------------------------------------------
-  // Authorization. Roles are handled by RolesGuard; everything that depends on
-  // WHICH row is being touched has to happen here, where the row is available.
-  // -------------------------------------------------------------------------
+  // Authorization. Roles are handled by RolesGuard.
 
-  /**
-   * Throws unless the caller is allowed to READ this report.
-   *
-   * Managers may read every report; a team member may read only their own. A
-   * member asking for someone else's report gets 404, not 403: a 403 would
-   * confirm that the id exists, which is itself a leak.
-   *
-   * Deliberately a separate, tiny query rather than a generic select bolted
-   * onto each caller -- it keeps every read path using one identical rule.
-   */
+  // Throws unless the caller may READ this report. A member gets 404, not 403:
+  // a 403 would confirm the id exists.
   private async assertCanRead(
     id: string,
     user: AuthenticatedUser,
@@ -65,13 +54,7 @@ export class ReportsService {
     }
   }
 
-  /**
-   * Content is written by its author and nobody else.
-   *
-   * Managers are rejected here as well as by @Roles() on the route, because the
-   * rule is "a manager can never edit report content", not "a manager cannot
-   * reach this particular URL".
-   */
+  // Content is written by its author and nobody else.
   private assertCanWriteContent(
     user: AuthenticatedUser,
     ownerId?: string,
@@ -87,11 +70,9 @@ export class ReportsService {
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Reads
-  // -------------------------------------------------------------------------
+  // Reads -------------------------------------------------------------------------
 
-  /** The caller's own reports, paginated and filtered. */
+  // The caller's own reports, paginated and filtered.
   async findMine(
     user: AuthenticatedUser,
     query: QueryReportsDto,
@@ -114,8 +95,7 @@ export class ReportsService {
         : {}),
     };
 
-    // One round trip for the page and the total, so the count always matches
-    // the rows returned.
+    // One round trip for the page and the total, so the count always matches the rows returned.
     const [data, total] = await this.prisma.$transaction([
       this.prisma.report.findMany({
         where,
@@ -147,14 +127,13 @@ export class ReportsService {
     });
   }
 
-  /** One specific version -- what "view the version this comment was on" calls. */
+  // One specific version -- what "view the version this comment was on" calls.
   async findVersion(
     reportId: string,
     versionId: string,
     user: AuthenticatedUser,
   ) {
-    // Ownership is checked against the report first, so an unrelated version id
-    // cannot be used to read someone else's content.
+    // Ownership is checked against the report first.
     await this.assertCanRead(reportId, user);
 
     const version = await this.prisma.reportVersion.findFirst({
@@ -169,11 +148,9 @@ export class ReportsService {
     return version;
   }
 
-  // -------------------------------------------------------------------------
-  // Writes
-  // -------------------------------------------------------------------------
+  // Writes -------------------------------------------------------------------------
 
-  /** Creates a DRAFT report and its first version in one transaction. */
+  // Creates a DRAFT report and its first version in one transaction.
   async create(dto: CreateReportDto, user: AuthenticatedUser) {
     this.assertCanWriteContent(user);
 
@@ -195,8 +172,7 @@ export class ReportsService {
     const content = contentFromDto(dto);
 
     const reportId = await this.prisma.$transaction(async (tx) => {
-      // Report and version reference each other, so the pointer is set in a
-      // second step once the version id exists. Both commit together.
+      // Report and version reference each other.
       const report = await tx.report.create({
         data: {
           userId: user.id,
@@ -229,17 +205,8 @@ export class ReportsService {
     return this.findOne(reportId, user);
   }
 
-  /**
-   * Edits content. What that means depends on the status:
-   *
-   *   DRAFT             -> mutate the current version in place. Nobody has read
-   *                        it yet, so keeping a version per keystroke would be
-   *                        noise.
-   *   NEEDS_CORRECTION  -> the current version has been submitted and reviewed,
-   *                        so it is frozen. Copy it forward into a new version,
-   *                        apply the patch there, and move the pointer.
-   *   SUBMITTED/APPROVED-> refused: the member has handed it over.
-   */
+  // Edits content: DRAFT mutates its version in place; NEEDS_CORRECTION copies
+  // forward into a new version, leaving the reviewed one frozen. What that means depends on the status.
   async update(id: string, dto: UpdateReportDto, user: AuthenticatedUser) {
     this.assertCanWriteContent(user);
 
@@ -279,9 +246,7 @@ export class ReportsService {
     await this.prisma.$transaction(
       async (tx) => {
         if (isDraft) {
-          // Replace the child rows of the SAME version. Delete-then-create is
-          // used rather than diffing: the client sends whole sections, and a
-          // diff would add complexity with no behavioural gain.
+          // Replace the child rows of the SAME version.
           await Promise.all([
             tx.task.deleteMany({
               where: { reportVersionId: currentVersionId },
@@ -305,9 +270,7 @@ export class ReportsService {
             data: nestedCreateFor(merged),
           });
         } else {
-          // NEEDS_CORRECTION: the old version and its children are left exactly
-          // as they were, so the manager's comment still points at what they
-          // reviewed.
+          // NEEDS_CORRECTION: the old version and its children are left exactly as they were.
           const version = await tx.reportVersion.create({
             data: {
               reportId: report.id,
@@ -337,7 +300,7 @@ export class ReportsService {
     return this.findOne(id, user);
   }
 
-  /** DRAFT or NEEDS_CORRECTION -> SUBMITTED, stamping the current version. */
+  // DRAFT or NEEDS_CORRECTION -> SUBMITTED, stamping the current version.
   async submit(id: string, user: AuthenticatedUser) {
     this.assertCanWriteContent(user);
 
@@ -365,8 +328,7 @@ export class ReportsService {
     await this.prisma.$transaction([
       this.prisma.reportVersion.update({
         where: { id: report.currentVersionId },
-        // The submission timestamp belongs to the version, which is what makes
-        // "submitted at" meaningful per revision rather than per report.
+        // The submission timestamp belongs to the version.
         data: { submittedAt: new Date() },
       }),
       this.prisma.report.update({

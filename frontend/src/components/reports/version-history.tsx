@@ -4,13 +4,7 @@ import { cn } from '@/lib/utils';
 import { formatDateTime } from '@/lib/format';
 import type { VersionSummary } from '@/lib/types';
 
-/**
- * The version list. Selecting one sets ?version=<id> on the URL, which the
- * server component reads and fetches through GET /reports/:id/versions/:vid.
- *
- * Links rather than client state: the chosen version is then shareable, and the
- * fetch stays on the server.
- */
+// The version list.
 export function VersionHistory({
   reportId,
   versions,
@@ -22,7 +16,7 @@ export function VersionHistory({
   versions: VersionSummary[];
   currentVersionId: string | null;
   selectedVersionId: string;
-  /** '/reports' for the member view, '/manager/reports' for the review page. */
+  // '/reports' for the member view, '/manager/reports' for the review page.
   basePath?: string;
 }) {
   return (

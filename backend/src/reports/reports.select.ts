@@ -1,14 +1,8 @@
 import { Prisma } from '@prisma/client';
 
-/**
- * Shared Prisma selects.
- *
- * Kept in one file so every endpoint returns the same shape for the same
- * concept, and so a field added to a version's content shows up everywhere at
- * once instead of in whichever query someone remembered to update.
- */
+// Shared Prisma selects.
 
-/** Full content of one version. */
+// Full content of one version.
 export const VERSION_CONTENT_SELECT = {
   id: true,
   versionNumber: true,
@@ -37,14 +31,14 @@ export const VERSION_CONTENT_SELECT = {
   hoursByType: { select: { id: true, taskType: true, hours: true } },
 } satisfies Prisma.ReportVersionSelect;
 
-/** Lightweight entry for the version-history list on a report. */
+// Lightweight entry for the version-history list on a report.
 export const VERSION_SUMMARY_SELECT = {
   id: true,
   versionNumber: true,
   submittedAt: true,
 } satisfies Prisma.ReportVersionSelect;
 
-/** A row in a report list. Deliberately excludes the full content. */
+// A row in a report list.
 export const REPORT_LIST_SELECT = {
   id: true,
   weekStartDate: true,
@@ -58,7 +52,7 @@ export const REPORT_LIST_SELECT = {
   _count: { select: { versions: true, reviewComments: true } },
 } satisfies Prisma.ReportSelect;
 
-/** A single report with its current content, history and review trail. */
+// A single report with its current content, history and review trail.
 export const REPORT_DETAIL_SELECT = {
   id: true,
   weekStartDate: true,

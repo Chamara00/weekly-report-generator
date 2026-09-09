@@ -18,13 +18,7 @@ import {
 const BCRYPT_ROUNDS = 10;
 const UNIQUE_VIOLATION = 'P2002';
 
-/**
- * The shape of a user that is safe to send to a client.
- *
- * passwordHash is excluded here, at the query level, so it never enters the
- * application at all. That is stronger than fetching the whole row and deleting
- * the field afterwards, which is easy to forget on a new code path.
- */
+// The shape of a user that is safe to send to a client.
 export const SAFE_USER_SELECT = {
   id: true,
   email: true,
@@ -43,12 +37,7 @@ export type SafeUser = Prisma.UserGetPayload<{
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Returns the FULL user row, including passwordHash.
-   *
-   * Only AuthService may use this, and only to compare a bcrypt hash during
-   * login. Never return the result of this method from a controller.
-   */
+  // Returns the FULL user row, including passwordHash.
   findByEmailWithPassword(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { email } });
   }
@@ -67,7 +56,7 @@ export class UsersService {
     });
   }
 
-  /** Persists a new user. The caller is responsible for hashing the password. */
+  // Persists a new user.
   create(data: {
     email: string;
     passwordHash: string;
@@ -80,15 +69,9 @@ export class UsersService {
     });
   }
 
-  // ---------------------------------------------------------------------------
-  // Manager-only administration
-  //
-  // Every method here guards two invariants that a UI alone cannot be trusted
-  // to hold: a manager may not lock themselves out, and the team may not be
-  // left with no manager at all.
-  // ---------------------------------------------------------------------------
+  // Manager-only administration Every method here guards two invariants that a UI alone cannot be.
 
-  /** Paginated user list with each person's report count. */
+  // Paginated user list with each person's report count.
   async findAll(query: QueryUsersDto) {
     const where: Prisma.UserWhereInput = {
       ...(query.role ? { role: query.role } : {}),
@@ -125,13 +108,7 @@ export class UsersService {
     };
   }
 
-  /**
-   * Creates an account on someone's behalf.
-   *
-   * There is no mail service in this project, so "invite" means: the manager
-   * creates the account and passes on the temporary password, which is returned
-   * exactly once here and never stored in readable form.
-   */
+  // Creates an account on someone's behalf.
   async invite(dto: InviteUserDto) {
     const temporaryPassword =
       dto.password ?? crypto.randomBytes(9).toString('base64url');
@@ -161,7 +138,7 @@ export class UsersService {
     }
   }
 
-  /** Promotes or demotes a user. The only way a MANAGER is ever created. */
+  // Promotes or demotes a user.
   async updateRole(id: string, dto: UpdateRoleDto, actingManagerId: string) {
     const user = await this.requireUser(id);
 
@@ -185,7 +162,7 @@ export class UsersService {
     });
   }
 
-  /** Deactivates (or restores) an account. Reports are always kept. */
+  // Deactivates (or restores) an account.
   async setActive(id: string, dto: SetActiveDto, actingManagerId: string) {
     await this.requireUser(id);
 
@@ -204,13 +181,7 @@ export class UsersService {
     });
   }
 
-  /**
-   * Permanently deletes a user -- allowed only when they have filed nothing.
-   *
-   * User -> Report is onDelete: Cascade, so deleting someone with reports would
-   * take their entire history with them. Anyone who has reported is deactivated
-   * instead, which is what the isActive flag exists for.
-   */
+  // Permanently deletes a user -- allowed only when they have filed nothing.
   async remove(id: string, actingManagerId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
@@ -256,7 +227,7 @@ export class UsersService {
     return user;
   }
 
-  /** Refuses any change that would leave the team with no active manager. */
+  // Refuses any change that would leave the team with no active manager.
   private async assertNotLastManager(id: string): Promise<void> {
     const remaining = await this.prisma.user.count({
       where: { role: Role.MANAGER, isActive: true, id: { not: id } },

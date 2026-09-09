@@ -12,12 +12,7 @@ import {
 } from 'recharts';
 import { CHART_COLORS, ChartCard } from './chart-card';
 
-/**
- * Hours spent per project.
- *
- * Horizontal bars: project names are long, and rotating labels on a vertical
- * chart makes them unreadable on a phone.
- */
+// Hours spent per project.
 export function WorkloadChart({
   data,
 }: {

@@ -3,12 +3,12 @@ import type { ReactNode } from 'react';
 interface EmptyStateProps {
   title: string;
   description?: string;
-  /** Optional call to action, e.g. "Create your first report". */
+  // Optional call to action, e.g.
   action?: ReactNode;
   icon?: ReactNode;
 }
 
-/** Shown wherever a list legitimately has no rows -- never a blank panel. */
+// Shown wherever a list legitimately has no rows -- never a blank panel.
 export function EmptyState({ title, description, action, icon }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-10 text-center">

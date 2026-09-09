@@ -4,13 +4,7 @@ import { Button } from '@/components/ui/button';
 import { formatWeek } from '@/lib/format';
 import type { ReportListItem } from '@/lib/types';
 
-/**
- * The correction loop's front door.
- *
- * Deliberately loud and placed above everything else: a report sent back is the
- * one thing that needs the member's attention today, and it is easy to miss if
- * it is just another amber row in a table.
- */
+// The correction loop's front door.
 export function CorrectionCallout({ reports }: { reports: ReportListItem[] }) {
   if (reports.length === 0) return null;
 

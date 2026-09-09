@@ -4,14 +4,7 @@ import {
   registerDecorator,
 } from 'class-validator';
 
-/**
- * Validates that an ISO date string falls on a Monday (in UTC).
- *
- * A week is identified by its start date, and Report has a unique constraint on
- * (userId, weekStartDate). If clients were free to send any day of the week,
- * the same week could be stored under seven different keys and the constraint
- * would stop meaning anything.
- */
+// Validates that an ISO date string falls on a Monday (in UTC).
 export function IsMonday(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({

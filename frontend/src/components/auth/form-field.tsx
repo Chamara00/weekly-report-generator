@@ -12,7 +12,7 @@ interface FormFieldProps {
   autoComplete?: string;
 }
 
-/** A labelled input with its inline validation message. */
+// A labelled input with its inline validation message.
 export function FormField({
   id,
   label,

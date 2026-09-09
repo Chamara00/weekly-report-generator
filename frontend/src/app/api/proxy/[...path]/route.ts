@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AUTH_COOKIE } from '@/lib/auth-cookie';
 
-/**
- * Authenticated pass-through to the Nest API for CLIENT components.
- *
- * Why this exists: the token is in an httpOnly cookie, so a browser fetch
- * cannot attach it as a Bearer header, and Nest's JwtStrategy only reads that
- * header. This handler runs on the server, where the cookie is readable, and
- * forwards the request with the header attached.
- *
- * It is a dumb pipe on purpose -- no business logic, no reshaping. Status codes
- * and error bodies come back exactly as Nest produced them, so a form can map
- * a 400's field messages without this layer needing to know about them.
- */
+// Authenticated pass-through to the Nest API for CLIENT components.
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 async function forward(request: NextRequest, path: string[]) {

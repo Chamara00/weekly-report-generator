@@ -3,17 +3,7 @@ import { AlertTriangle } from 'lucide-react';
 import { formatDateTime } from '@/lib/format';
 import type { ReportDetail, ReviewComment } from '@/lib/types';
 
-/**
- * The manager's feedback, pinned at the very top of the edit form.
- *
- * This is the core of the correction loop: the member must be able to read what
- * was wrong while fixing it, without navigating away. The most recent
- * REQUEST_CHANGES is shown in full; older ones are listed underneath so a
- * repeatedly-revised report keeps its whole conversation visible.
- *
- * Each entry names the version it was written against, and links to that frozen
- * version, so "you said this about v1" stays checkable after v2 exists.
- */
+// The manager's feedback, pinned at the very top of the edit form.
 export function CorrectionNotice({ report }: { report: ReportDetail }) {
   const requests = report.reviewComments.filter(
     (comment): comment is ReviewComment => comment.action === 'REQUEST_CHANGES',

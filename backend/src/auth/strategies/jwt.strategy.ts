@@ -8,13 +8,7 @@ import type {
   JwtPayload,
 } from '../types/authenticated-user.type';
 
-/**
- * Verifies the bearer token on every protected request.
- *
- * Registered under the name 'jwt', which is what AuthGuard('jwt') in
- * JwtAuthGuard refers to. Passport has already checked the signature and the
- * expiry before validate() is called.
- */
+// Verifies the bearer token on every protected request.
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
@@ -28,14 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  /**
-   * Re-reads the user from the database instead of trusting the token's claims
-   * blindly. A token stays valid until it expires, so this is what makes a
-   * deleted user, a DEACTIVATED user, or a role changed by an admin take effect
-   * immediately rather than at expiry.
-   *
-   * The return value becomes request.user, which @CurrentUser() reads.
-   */
+  // Re-reads the user from the database instead of trusting the token's claims blindly.
   async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
     const user = await this.usersService.findById(payload.sub);
 

@@ -10,21 +10,17 @@ import {
   TASKS_BY_PROJECT,
 } from './data';
 
-/**
- * Builds the content of one ReportVersion.
- *
- * Every choice is derived from (memberKey, projectKey, weekIndex,
- * versionNumber) rather than randomness, so `prisma db seed` twice in a row
- * produces byte-identical data.
- */
+// Builds the content of one ReportVersion.
 
-/** Small deterministic spread so different members/weeks do not look identical. */
+// Small deterministic spread so different members/weeks do not look identical.
 function pick<T>(pool: T[], offset: number): T {
   return pool[Math.abs(offset) % pool.length];
 }
 
 function seedOffset(memberKey: string, weekIndex: number, extra = 0): number {
-  const letters = memberKey.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const letters = memberKey
+    .split('')
+    .reduce((sum, char) => sum + char.charCodeAt(0), 0);
   return letters + weekIndex * 7 + extra * 3;
 }
 
@@ -81,10 +77,9 @@ export function buildVersionContent(args: {
 
   // 3-6 tasks, varying by member and week.
   const taskCount = 3 + (base % 4);
-  // The overloaded member consistently spends more than planned; everyone else
-  // lands near their estimate.
+  // The overloaded member consistently spends more than planned.
   const overloaded = memberKey === OVERLOADED_MEMBER;
-  const spendFactor = overloaded ? 1.35 : 0.95 + ((base % 3) * 0.05);
+  const spendFactor = overloaded ? 1.35 : 0.95 + (base % 3) * 0.05;
 
   const tasks = Array.from({ length: taskCount }, (_, index) => {
     const template = pick(pool, base + index);
@@ -92,14 +87,16 @@ export function buildVersionContent(args: {
     const status = pick(STATUSES, base + index);
     const hoursPlanned = 5 + ((base + index * 2) % 5);
 
-    // A later version reflects the manager's feedback: the member fills in more
-    // honest actuals, so completion creeps up.
+    // A later version reflects the manager's feedback: the member fills in more honest actuals.
     const completionBoost = (versionNumber - 1) * 10;
     const actualPercent = Math.min(
       100,
       status === TaskStatus.COMPLETED
         ? 100
-        : Math.max(0, plannedPercent - 20 + ((base + index) % 15) + completionBoost),
+        : Math.max(
+            0,
+            plannedPercent - 20 + ((base + index) % 15) + completionBoost,
+          ),
     );
 
     return {
@@ -120,19 +117,23 @@ export function buildVersionContent(args: {
   const plannedTasks = Array.from({ length: plannedCount }, (_, index) => ({
     name: pick(plannedPool, base + index),
   })).filter(
-    (task, index, all) => all.findIndex((other) => other.name === task.name) === index,
+    (task, index, all) =>
+      all.findIndex((other) => other.name === task.name) === index,
   );
 
   // 1-3 blockers. Every third slot carries the recurring team-wide theme.
   const blockerCount = 1 + (base % 3);
   const blockers = Array.from({ length: blockerCount }, (_, index) => ({
     description:
-      index === 0 && base % 3 === 0 ? RECURRING_BLOCKER : pick(BLOCKERS, base + index + 1),
+      index === 0 && base % 3 === 0
+        ? RECURRING_BLOCKER
+        : pick(BLOCKERS, base + index + 1),
     // Exactly one key issue per report.
     isKeyIssue: index === 0,
   })).filter(
     (blocker, index, all) =>
-      all.findIndex((other) => other.description === blocker.description) === index,
+      all.findIndex((other) => other.description === blocker.description) ===
+      index,
   );
 
   const achievementCount = 1 + ((base + 1) % 3);
@@ -142,7 +143,8 @@ export function buildVersionContent(args: {
     isKeyAchievement: index === 0,
   })).filter(
     (item, index, all) =>
-      all.findIndex((other) => other.description === item.description) === index,
+      all.findIndex((other) => other.description === item.description) ===
+      index,
   );
 
   // Hours by type add up to roughly the hours actually spent on tasks.

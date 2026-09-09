@@ -11,13 +11,13 @@ import {
 } from 'class-validator';
 import { IsMonday } from '../../common/validators/is-monday.validator';
 
-/** Which cross-team section to line up side by side. */
+// Which cross-team section to line up side by side.
 export enum DashboardSection {
   BLOCKERS = 'BLOCKERS',
   ACHIEVEMENTS = 'ACHIEVEMENTS',
 }
 
-/** Shared by every dashboard endpoint: which week are we looking at? */
+// Shared by every dashboard endpoint: which week are we looking at?
 export class WeekQueryDto {
   @ApiPropertyOptional({
     example: '2026-09-07',

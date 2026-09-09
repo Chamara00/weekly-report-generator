@@ -12,11 +12,7 @@ import type { ReportListItem } from '@/lib/types';
 
 export const metadata = { title: 'My dashboard' };
 
-/**
- * The member's landing page. A server component: everything here is a read, so
- * it is fetched on the server and shipped as HTML with no client-side loading
- * spinner or data store.
- */
+// The member's landing page.
 export default async function DashboardPage() {
   const weekStart = mondayOf();
   const weekEnd = weekEndFor(weekStart);
@@ -26,8 +22,7 @@ export default async function DashboardPage() {
   let needsCorrection: ReportListItem[];
 
   try {
-    // Two focused queries rather than one big one: the correction list must not
-    // be truncated by the page size of the recent list.
+    // Two focused queries rather than one big one.
     const [me, recent, corrections] = await Promise.all([
       getCurrentUser(),
       getMyReports({ limit: 50 }),

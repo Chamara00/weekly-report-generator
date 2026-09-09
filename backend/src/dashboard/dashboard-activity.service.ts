@@ -15,19 +15,8 @@ interface ActivityRow {
   comment: string | null;
 }
 
-/**
- * The recent-activity feed: submissions and review decisions, newest first.
- *
- * Note the deliberate difference from every other dashboard query: this one
- * reads ALL versions, not just the current one. The charts must not
- * double-count a report that was revised three times -- but the feed is a log
- * of events, and each of those three submissions genuinely happened. Filtering
- * to the current version here would erase history from a history view.
- *
- * The two event kinds live in different tables, so they are merged with UNION
- * ALL and sorted in SQL. Paginating after the union is what keeps the ordering
- * correct across both sources.
- */
+// Activity feed: submissions and review decisions, newest first. Unlike the charts this reads
+// ALL versions — it is a log of events, and each submission genuinely happened.
 @Injectable()
 export class DashboardActivityService {
   constructor(private readonly prisma: PrismaService) {}

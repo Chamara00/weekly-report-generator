@@ -10,14 +10,7 @@ import { formatWeek } from '@/lib/format';
 
 export const metadata = { title: 'Edit report' };
 
-/**
- * Edit an existing report.
- *
- * Only DRAFT and NEEDS_CORRECTION are editable -- the same rule the service
- * enforces. A SUBMITTED or APPROVED report is bounced back to the read-only
- * view with an explanation rather than showing a form whose every save would
- * 409.
- */
+// Edit an existing report.
 export default async function EditReportPage({
   params,
 }: {

@@ -3,14 +3,7 @@ import { validate } from 'class-validator';
 import { ReviewAction } from '@prisma/client';
 import { ReviewReportDto } from './review-report.dto';
 
-/**
- * The "you must say why" rule, tested at the layer that enforces it.
- *
- * These run the real DTO through class-transformer and class-validator exactly
- * as the global ValidationPipe does, so a decorator regression fails here --
- * including the subtle one where adding @IsOptional() silently disables the
- * required-comment rule.
- */
+// The "you must say why" rule, tested at the layer that enforces it.
 async function check(payload: Record<string, unknown>) {
   const dto = plainToInstance(ReviewReportDto, payload);
   const errors = await validate(dto);

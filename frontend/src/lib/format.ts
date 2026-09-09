@@ -1,6 +1,6 @@
-/** Display helpers shared by every page. */
+// Display helpers shared by every page.
 
-/** "2026-09-07" -> "7 Sep 2026". Dates arrive as ISO strings from the API. */
+// "2026-09-07" -> "7 Sep 2026".
 export function formatDate(value: string | Date | null | undefined): string {
   if (!value) return '—';
 
@@ -24,7 +24,7 @@ export function formatDateTime(value: string | Date | null | undefined): string 
   });
 }
 
-/** "7 – 13 Sep 2026" for a report's week. */
+// "7 – 13 Sep 2026" for a report's week.
 export function formatWeek(start: string | Date, end: string | Date): string {
   const from = new Date(start);
   const to = new Date(end);
@@ -39,13 +39,13 @@ export function formatWeek(start: string | Date, end: string | Date): string {
   return `${fromLabel} – ${formatDate(to)}`;
 }
 
-/** "NEEDS_CORRECTION" -> "Needs correction". */
+// "NEEDS_CORRECTION" -> "Needs correction".
 export function humanise(value: string): string {
   const spaced = value.replace(/_/g, ' ').toLowerCase();
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
-/** The Monday of the week containing `date`, as an ISO date string (UTC). */
+// The Monday of the week containing `date`, as an ISO date string (UTC).
 export function mondayOf(date: Date = new Date()): string {
   const utc = new Date(
     Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
@@ -55,13 +55,13 @@ export function mondayOf(date: Date = new Date()): string {
   return utc.toISOString().slice(0, 10);
 }
 
-/** True when an ISO date string falls on a Monday, mirroring the backend rule. */
+// True when an ISO date string falls on a Monday, mirroring the backend rule.
 export function isMonday(value: string): boolean {
   const date = new Date(value);
   return !Number.isNaN(date.getTime()) && date.getUTCDay() === 1;
 }
 
-/** The Sunday closing the week that starts on `weekStart`. */
+// The Sunday closing the week that starts on `weekStart`.
 export function weekEndFor(weekStart: string): string {
   const date = new Date(weekStart);
   date.setUTCDate(date.getUTCDate() + 6);

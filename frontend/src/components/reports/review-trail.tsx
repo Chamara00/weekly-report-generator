@@ -3,13 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { formatDateTime } from '@/lib/format';
 import type { ReviewComment } from '@/lib/types';
 
-/**
- * The review conversation, oldest first.
- *
- * Every entry states the version it was written against -- that is the whole
- * point of storing reportVersionId on the comment, and without showing it a
- * reader cannot tell which draft the manager was objecting to.
- */
+// The review conversation, oldest first.
 export function ReviewTrail({ comments }: { comments: ReviewComment[] }) {
   return (
     <Card>

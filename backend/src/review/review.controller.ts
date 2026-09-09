@@ -25,13 +25,7 @@ import { QueryTeamReportsDto } from './dto/query-team-reports.dto';
 import { ReviewReportDto } from './dto/review-report.dto';
 import { ReviewService } from './review.service';
 
-/**
- * Everything a manager does with other people's reports.
- *
- * @Roles(Role.MANAGER) is declared once on the CLASS, so it applies to every
- * route here -- RolesGuard's getAllAndOverride reads the handler first and
- * falls back to the class. A team member reaching any of these gets 403.
- */
+// Everything a manager does with other people's reports.
 @ApiTags('manager')
 @ApiBearerAuth()
 @ApiForbiddenResponse({

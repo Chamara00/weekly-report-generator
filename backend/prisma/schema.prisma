@@ -1,10 +1,4 @@
 // Weekly Report Hub — database schema.
-//
-// Two ideas drive the shape of this file:
-//   1. Report CONTENT is immutable once submitted. A Report row holds identity
-//      + status; every edit produces a new ReportVersion holding the content.
-//   2. A ReviewComment points at both the Report and the exact ReportVersion it
-//      was written against, so a manager always sees which text they reviewed.
 
 generator client {
   provider = "prisma-client-js"
@@ -18,10 +12,7 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ---------------------------------------------------------------------------
 // Enums
-// ---------------------------------------------------------------------------
-
 enum Role {
   TEAM_MEMBER
   MANAGER
@@ -63,21 +54,15 @@ enum ReviewAction {
   REQUEST_CHANGES
 }
 
-// ---------------------------------------------------------------------------
 // People and projects
-// ---------------------------------------------------------------------------
-
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String @id @default(cuid())
+  email        String @unique
   passwordHash String
   name         String
-  role         Role     @default(TEAM_MEMBER)
+  role         Role   @default(TEAM_MEMBER)
 
-  /// Soft delete. Removing a person from the team must not delete the weeks
-  /// they reported: User -> Report cascades, so a hard delete would destroy
-  /// their history. Deactivating blocks login and hides them from team lists
-  /// while every report they filed stays readable.
+  /// Soft delete. Removing a person from the team must not delete the weeks they reported.
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -117,9 +102,7 @@ model ProjectMember {
   @@index([projectId])
 }
 
-// ---------------------------------------------------------------------------
-// Report: identity + status only. No content lives here.
-// ---------------------------------------------------------------------------
+// Report: identity + status only.
 
 model Report {
   id            String       @id @default(cuid())
@@ -141,8 +124,7 @@ model Report {
   versions       ReportVersion[] @relation("ReportVersions")
   reviewComments ReviewComment[]
 
-  /// One report per person per week. This unique also serves as the
-  /// (userId, weekStartDate) index, so no separate @@index is needed.
+  /// One report per person per week.
   @@unique([userId, weekStartDate])
   @@index([projectId])
   @@index([status])
@@ -172,10 +154,7 @@ model ReportVersion {
   @@index([reportId])
 }
 
-// ---------------------------------------------------------------------------
-// Version content. Every row below belongs to exactly one ReportVersion and
-// dies with it (onDelete: Cascade).
-// ---------------------------------------------------------------------------
+// Version content.
 
 /// A task the member actually worked on during the week.
 model Task {
@@ -242,10 +221,7 @@ model HoursByType {
   @@index([reportVersionId])
 }
 
-// ---------------------------------------------------------------------------
 // Review trail
-// ---------------------------------------------------------------------------
-
 /// A manager's decision on one specific version of one report.
 model ReviewComment {
   id              String       @id @default(cuid())

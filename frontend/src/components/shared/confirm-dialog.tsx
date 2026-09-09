@@ -13,20 +13,17 @@ import {
 import { Button } from '@/components/ui/button';
 
 interface ConfirmDialogProps {
-  /** Rendered as the dialog's trigger. Base UI merges its props onto it. */
+  // Rendered as the dialog's trigger.
   trigger: ReactElement;
   title: string;
   description: string;
   confirmLabel?: string;
-  /** Async so the dialog can show a pending state until the call settles. */
+  // Async so the dialog can show a pending state until the call settles.
   onConfirm: () => Promise<void> | void;
   destructive?: boolean;
 }
 
-/**
- * Confirmation for actions that cannot be undone from the UI -- submitting a
- * report (content freezes) and, later, deleting a project.
- */
+// Confirmation for actions that cannot be undone from the UI.
 export function ConfirmDialog({
   trigger,
   title,

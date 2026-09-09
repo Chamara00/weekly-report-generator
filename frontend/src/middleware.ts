@@ -1,20 +1,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { AUTH_COOKIE, decodeToken, homePathForRole } from '@/lib/auth-cookie';
 
-/** Pages reachable without a token. */
+// Pages reachable without a token.
 const PUBLIC_ROUTES = ['/login', '/register'];
 
-/** Which role owns which section of the app. */
+// Which role owns which section of the app.
 const ROLE_PREFIXES: Record<string, 'MANAGER' | 'TEAM_MEMBER'> = {
   '/manager': 'MANAGER',
   '/dashboard': 'TEAM_MEMBER',
 };
 
-/**
- * Page-level routing only -- convenience, not security. The real gate is
- * JwtAuthGuard/RolesGuard in Nest, which verify the signature; this only reads
- * the claims to avoid showing someone a page they cannot use.
- */
+// Page-level routing only -- convenience, not security.
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const claims = decodeToken(request.cookies.get(AUTH_COOKIE)?.value ?? '');

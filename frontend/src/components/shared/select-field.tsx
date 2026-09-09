@@ -8,15 +8,7 @@ export interface SelectOption {
   label: string;
 }
 
-/**
- * A labelled dropdown built on the native <select>.
- *
- * Deliberately not the shadcn/Base UI Select: that one renders the raw value in
- * its trigger unless it is also given an items map, so a project dropdown would
- * show a cuid instead of "Client A". A native select maps value to label for
- * free, is keyboard- and screen-reader-correct with no extra code, and opens
- * the OS picker on mobile.
- */
+// A labelled dropdown built on the native <select>.
 export function SelectField({
   id,
   label,

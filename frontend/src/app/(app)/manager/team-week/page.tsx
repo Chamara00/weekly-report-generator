@@ -13,12 +13,7 @@ import { mondayOf } from '@/lib/format';
 
 export const metadata = { title: 'Team week' };
 
-/**
- * One week, one section, every member side by side.
- *
- * Reads each report's CURRENT version only, so a blocker the author has already
- * rewritten does not appear here as if it were still open.
- */
+// One week, one section, every member side by side.
 async function SectionGrid({ week, section }: { week: string; section: string }) {
   let view;
 

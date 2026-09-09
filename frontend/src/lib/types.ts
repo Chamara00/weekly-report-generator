@@ -1,10 +1,4 @@
-/**
- * TypeScript mirrors of the backend's response shapes.
- *
- * Hand-written rather than generated: the API is small, and these types are the
- * one place the frontend states what it expects, so a change in a Prisma select
- * surfaces here as a type error instead of an undefined at runtime.
- */
+// TypeScript mirrors of the backend's response shapes.
 
 export type Role = 'TEAM_MEMBER' | 'MANAGER';
 export type ReportStatus = 'DRAFT' | 'SUBMITTED' | 'NEEDS_CORRECTION' | 'APPROVED';
@@ -57,7 +51,7 @@ export interface Project {
   name: string;
   description: string | null;
   _count?: { reports: number; members: number };
-  /** Present on GET /projects/:id, absent on the list endpoint. */
+  // Present on GET /projects/:id, absent on the list endpoint.
   members?: { user: { id: string; name: string; email: string; role: Role } }[];
 }
 
@@ -96,7 +90,7 @@ export interface HoursByType {
   hours: number;
 }
 
-/** Full content of one version. */
+// Full content of one version.
 export interface ReportVersion {
   id: string;
   versionNumber: number;
@@ -111,7 +105,7 @@ export interface ReportVersion {
   hoursByType: HoursByType[];
 }
 
-/** Entry in a report's version-history list. */
+// Entry in a report's version-history list.
 export interface VersionSummary {
   id: string;
   versionNumber: number;
@@ -128,7 +122,7 @@ export interface ReviewComment {
   manager: { id: string; name: string };
 }
 
-/** A row in a report list. No content. */
+// A row in a report list.
 export interface ReportListItem {
   id: string;
   weekStartDate: string;
@@ -154,7 +148,7 @@ export interface Paginated<T> {
   meta: { page: number; limit: number; total: number; totalPages: number };
 }
 
-/** Query params accepted by the report list endpoints. */
+// Query params accepted by the report list endpoints.
 export interface ReportQuery {
   page?: number;
   limit?: number;
@@ -165,7 +159,7 @@ export interface ReportQuery {
   userId?: string;
 }
 
-/** The body of POST /reports and PATCH /reports/:id. */
+// The body of POST /reports and PATCH /reports/:id.
 export interface ReportPayload {
   projectId?: string;
   weekStartDate?: string;
@@ -178,9 +172,8 @@ export interface ReportPayload {
   links?: string[];
 }
 
-// ---------------------------------------------------------------------------
-// Manager dashboard shapes
-// ---------------------------------------------------------------------------
+
+// Manager dashboard shapes.
 
 export interface DashboardSummary {
   weekStart: string;
@@ -268,9 +261,8 @@ export interface SectionView {
   }[];
 }
 
-// ---------------------------------------------------------------------------
-// User administration (manager-only)
-// ---------------------------------------------------------------------------
+
+// User administration (manager-only).
 
 export interface ManagedUser {
   id: string;
@@ -285,6 +277,6 @@ export interface ManagedUser {
 
 export interface InviteResult {
   user: ManagedUser;
-  /** Shown once so the manager can pass it on; never retrievable again. */
+  // Shown once so the manager can pass it on; never retrievable again.
   temporaryPassword: string;
 }

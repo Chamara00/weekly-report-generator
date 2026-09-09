@@ -7,31 +7,18 @@ import { Toaster } from '@/components/ui/sonner';
 import { AssistantWidget } from '@/components/assistant/assistant-widget';
 import { getAssistantStatus, getCurrentUser } from '@/lib/server-api';
 
-/**
- * The signed-in shell: persistent sidebar from `md` up, drawer below it.
- *
- * The current user is fetched once here, on the server, and passed down. Every
- * page inside this group therefore renders with a known user and does not each
- * make its own /auth/me call.
- *
- * Middleware already redirects users without a cookie, but this catches the
- * case where the cookie exists and the token is rejected -- an expired or
- * revoked token means /auth/me 401s, and the only sensible answer is /login.
- */
+// The signed-in shell: persistent sidebar from `md` up, drawer below it.
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   let user;
 
   try {
     user = await getCurrentUser();
   } catch {
-    // The cookie exists but the API rejected it (expired, revoked, or the user
-    // was deleted/deactivated). Middleware cannot tell -- it only decodes the
-    // token -- so the cookie must be cleared here or the two bounce forever.
+    // Cookie exists but the API rejected it (expired, revoked, user gone) — clear it, or we loop.
     redirect('/api/auth/clear');
   }
 
-  // Managers only, and only when a Gemini key is configured — otherwise the
-  // widget would offer a feature that can only fail.
+  // Managers only, and only when a Gemini key is configured; otherwise the widget stays hidden.
   const assistant =
     user.role === 'MANAGER' ? await getAssistantStatus() : { configured: false };
 
@@ -59,8 +46,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       {assistant.configured ? <AssistantWidget /> : null}
 
-      {/* Mounted once here so review actions and project CRUD can confirm
-          themselves from anywhere in the signed-in app. */}
+      {/* Mounted once so any page in the signed-in app can raise a toast. */}
       <Toaster position="top-right" richColors />
     </div>
   );

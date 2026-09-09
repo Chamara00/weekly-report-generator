@@ -11,17 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ApiError, ValidationError, reviewReport } from '@/lib/client-api';
 import type { ReportDetail } from '@/lib/types';
 
-/**
- * Approve, or send back with a comment.
- *
- * Note what this panel cannot do: touch report content. There is no field here
- * for a task, a blocker or an hour -- a manager's only writes are a status
- * change and a comment, matching what the API allows.
- *
- * The empty-comment rule is enforced twice on purpose: locally for instant
- * feedback, and again by displaying whatever the backend says if a request gets
- * through anyway (a stale tab, a scripted call, a future refactor).
- */
+// Approve, or send back with a comment.
 export function ReviewPanel({ report }: { report: ReportDetail }) {
   const router = useRouter();
   const [comment, setComment] = useState('');
@@ -52,8 +42,7 @@ export function ReviewPanel({ report }: { report: ReportDetail }) {
           : `Sent back to ${report.user.name} for correction`,
       );
 
-      // Back to the queue: the next report needing attention is there, and
-      // refresh() makes the queue re-fetch instead of showing a cached status.
+      // Back to the queue: the next report needing attention is there.
       router.push('/manager/reports');
       router.refresh();
     } catch (caught) {

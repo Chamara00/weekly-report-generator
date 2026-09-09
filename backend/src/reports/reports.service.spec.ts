@@ -34,7 +34,7 @@ const MANAGER: AuthenticatedUser = {
   role: Role.MANAGER,
 };
 
-/** A current version with one of everything, as loaded for an edit. */
+// A current version with one of everything, as loaded for an edit.
 const currentVersion = (versionNumber = 1) => ({
   id: `v${versionNumber}`,
   versionNumber,
@@ -56,7 +56,7 @@ const currentVersion = (versionNumber = 1) => ({
   hoursByType: [],
 });
 
-/** The row shape reports.service loads before an update. */
+// The row shape reports.service loads before an update.
 const reportRow = (
   status: ReportStatus,
   userId = ALICE.id,
@@ -80,16 +80,13 @@ describe('ReportsService', () => {
     prisma.report.findUniqueOrThrow.mockResolvedValue({ id: 'report-1' });
   });
 
-  // -------------------------------------------------------------------------
-  // Ownership: a member may only touch their own reports
-  // -------------------------------------------------------------------------
+  // Ownership: a member may only touch their own reports.
 
   describe('ownership', () => {
     it("returns 404 (not 403) when a member reads another member's report", async () => {
       prisma.report.findUnique.mockResolvedValue({ userId: BOB.id });
 
-      // 404 is deliberate: a 403 would confirm the id exists, which leaks the
-      // existence of other people's reports.
+      // 404 is deliberate: a 403 would confirm the id exists.
       await expect(service.findOne('report-1', ALICE)).rejects.toBeInstanceOf(
         NotFoundException,
       );
@@ -150,9 +147,7 @@ describe('ReportsService', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // A manager may never author content
-  // -------------------------------------------------------------------------
+  // A manager may never author content.
 
   describe('managers cannot write report content', () => {
     it('rejects create', async () => {
@@ -180,9 +175,7 @@ describe('ReportsService', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // The status state machine
-  // -------------------------------------------------------------------------
+  // The status state machine.
 
   describe('state machine', () => {
     it.each([ReportStatus.APPROVED, ReportStatus.SUBMITTED])(
@@ -297,9 +290,7 @@ describe('ReportsService', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // Listing is always scoped to the caller
-  // -------------------------------------------------------------------------
+  // Listing is always scoped to the caller.
 
   describe('findMine', () => {
     it('always filters by the caller’s own id', async () => {

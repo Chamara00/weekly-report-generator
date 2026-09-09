@@ -6,13 +6,7 @@ import { humanise } from '@/lib/format';
 
 export const metadata = { title: 'Settings' };
 
-/**
- * Read-only account page.
- *
- * Editing a profile or changing a password would need backend endpoints that do
- * not exist yet (the API exposes register/login/me only), so this shows what
- * the token actually resolves to rather than pretending to save.
- */
+// Read-only account page.
 export default async function SettingsPage() {
   let user;
 

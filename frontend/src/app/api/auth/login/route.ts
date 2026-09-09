@@ -2,13 +2,7 @@ import { NextResponse } from 'next/server';
 import { ApiError, apiFetch, type AuthResponse } from '@/lib/api';
 import { AUTH_COOKIE } from '@/lib/auth-cookie';
 
-/**
- * Exchanges credentials for a cookie.
- *
- * The browser never sees the token: this handler runs on the server, calls
- * Nest, and writes the token into an httpOnly cookie. That is what stops
- * client-side JavaScript (and therefore an XSS payload) from reading it.
- */
+// Exchanges credentials for a cookie.
 export async function POST(request: Request) {
   const body: unknown = await request.json().catch(() => null);
 
@@ -28,7 +22,7 @@ export async function POST(request: Request) {
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       path: '/',
-      maxAge: 60 * 60 * 24, // Mirrors JWT_EXPIRES_IN=1d.
+      maxAge: 60 * 60 * 24, /* Mirrors JWT_EXPIRES_IN=1d. */
     });
 
     return response;

@@ -13,12 +13,7 @@ import {
 import { SidebarNav } from './sidebar-nav';
 import type { Role } from '@/lib/types';
 
-/**
- * The sidebar's mobile form: a drawer behind a hamburger button.
- *
- * Hidden from `md` upwards, where the persistent sidebar takes over -- that
- * pair is what makes the shell responsive.
- */
+// The sidebar's mobile form: a drawer behind a hamburger button.
 export function MobileNav({ role }: { role: Role }) {
   const [open, setOpen] = useState(false);
 

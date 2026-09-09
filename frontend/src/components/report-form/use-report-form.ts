@@ -43,7 +43,7 @@ export const emptyTask = (): Task => ({
   deliverable: '',
 });
 
-/** Seeds the form from an existing report, or from blank for a new one. */
+// Seeds the form from an existing report, or from blank for a new one.
 export function initialState(report?: ReportDetail, weekStart?: string): ReportFormState {
   const version = report?.currentVersion;
 
@@ -62,14 +62,7 @@ export function initialState(report?: ReportDetail, weekStart?: string): ReportF
   };
 }
 
-/**
- * Client-side validation mirroring the backend DTOs.
- *
- * The server rules are authoritative -- this exists so a member is told about a
- * bad percentage before a round trip, not instead of the backend checking.
- * Error keys match the API's message paths ("tasks.0.name") so server errors
- * can be dropped into the same map.
- */
+// Client-side validation mirroring the backend DTOs.
 function validate(state: ReportFormState, requireWeek: boolean): Record<string, string> {
   const errors: Record<string, string> = {};
 
@@ -114,7 +107,7 @@ function validate(state: ReportFormState, requireWeek: boolean): Record<string, 
   return errors;
 }
 
-/** Strips empty rows and normalises types before sending. */
+// Strips empty rows and normalises types before sending.
 function toPayload(state: ReportFormState, includeWeek: boolean): ReportPayload {
   return {
     projectId: state.projectId,
@@ -187,14 +180,12 @@ export function useReportForm(report: ReportDetail | undefined, defaultWeek?: st
         await submitReport(saved.id);
       }
 
-      // refresh() so the server components behind this page (dashboard counts,
-      // report list) re-fetch rather than serving a stale cache.
+      // refresh() so the server components behind this page re-fetch instead of serving a stale cache.
       router.push(`/reports/${saved.id}`);
       router.refresh();
     } catch (error) {
       if (error instanceof ValidationError) {
-        // Backend messages start with their field path, so they slot into the
-        // same map the client-side rules use.
+        // Backend messages start with their field path.
         const mapped: Record<string, string> = {};
         for (const message of error.messages) {
           const field = message.split(' ')[0];

@@ -10,14 +10,7 @@ import { SelectField } from '@/components/shared/select-field';
 import { ApiError, addProjectMember, removeProjectMember } from '@/lib/client-api';
 import type { Project, TeamMemberStats } from '@/lib/types';
 
-/**
- * Assigns people to a project (§5, optional).
- *
- * The endpoints already existed and were tested; this is the UI for them.
- * Membership is presentational for now — it does not restrict which project a
- * report can be filed against, which is a deliberate simplification worth
- * naming rather than hiding.
- */
+// Assigns people to a project (§5, optional).
 export function ProjectMembers({
   project,
   team,

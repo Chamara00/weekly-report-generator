@@ -12,14 +12,7 @@ import { SelectField } from '@/components/shared/select-field';
 import { ApiError, ValidationError, inviteUser } from '@/lib/client-api';
 import type { Role } from '@/lib/types';
 
-/**
- * Creates an account on someone's behalf and shows the temporary password once.
- *
- * There is no mail service in this project, so the password is displayed for
- * the manager to pass on out of band. It is hashed before storage and can never
- * be read back — refreshing the page loses it, which is why it is shown in a
- * persistent panel rather than a toast.
- */
+// Creates an account on someone's behalf and shows the temporary password once.
 export function InviteUserForm() {
   const router = useRouter();
   const [name, setName] = useState('');

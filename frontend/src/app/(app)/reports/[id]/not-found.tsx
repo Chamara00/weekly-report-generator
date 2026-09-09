@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/shared/empty-state';
 
-/** Shown when the API answers 404 -- either no such report, or not yours. */
+// Shown when the API answers 404 -- either no such report, or not yours.
 export default function ReportNotFound() {
   return (
     <EmptyState

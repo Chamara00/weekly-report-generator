@@ -29,17 +29,7 @@ import {
 } from './dto/user-admin.dto';
 import { UsersService } from './users.service';
 
-/**
- * User administration. @Roles(Role.MANAGER) on the class covers every route.
- *
- * This controller is where §1's "role assignment" lives: public registration
- * deliberately cannot set a role, so the only path to MANAGER is an existing
- * manager granting it here.
- *
- * The acting manager's id is passed into the service on every mutating call so
- * the service can refuse self-demotion, self-deactivation and self-deletion --
- * rules that belong next to the data, not in the UI.
- */
+// User administration.
 @ApiTags('users')
 @ApiBearerAuth()
 @ApiForbiddenResponse({ description: 'Managers only' })

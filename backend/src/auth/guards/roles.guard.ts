@@ -11,16 +11,7 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import type { AuthenticatedUser } from '../types/authenticated-user.type';
 
-/**
- * Authorisation: "is this user ALLOWED to do it?"
- *
- * Runs after JwtAuthGuard (see the note in jwt-auth.guard.ts) and relies on
- * request.user existing. This is the single reusable role gate for the whole
- * app -- every later module uses @Roles() rather than writing its own guard.
- *
- * Deliberately NOT this guard's job: ownership ("is this MY report?"). That
- * needs the record from the database, so it lives in the service layer.
- */
+// Authorisation: runs after JwtAuthGuard, which is what populated request.user. Denies with 403.
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}

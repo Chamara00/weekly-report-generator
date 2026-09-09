@@ -20,12 +20,7 @@ import { buildQueueWhere } from './review-queue.query';
 export class ReviewService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * The review queue: every member's reports, SUBMITTED first, then newest week.
-   *
-   * No ownership filtering happens here -- a manager is allowed to see
-   * everything, and RolesGuard has already established that the caller is one.
-   */
+  // The review queue: every member's reports, SUBMITTED first, then newest week.
   async findTeamReports(
     query: QueryTeamReportsDto,
   ): Promise<PaginatedResult<unknown>> {
@@ -72,7 +67,7 @@ export class ReviewService {
     };
   }
 
-  /** Any report, in full. No 404-masking: managers may see every report. */
+  // Any report, in full.
   async findTeamReport(id: string) {
     const report = await this.prisma.report.findUnique({
       where: { id },
@@ -86,17 +81,7 @@ export class ReviewService {
     return report;
   }
 
-  /**
-   * Approve a report or send it back.
-   *
-   * Only a SUBMITTED report can be reviewed: a DRAFT has not been handed over,
-   * a NEEDS_CORRECTION one is already back with its author, and an APPROVED one
-   * is finished. Anything else is a 409.
-   *
-   * The comment is attached to the report's CURRENT version, which is the one
-   * the manager was reading. When the member later edits, that edit creates a
-   * new version and this comment keeps pointing at the text it was about.
-   */
+  // Approve a report or send it back.
   async review(id: string, dto: ReviewReportDto, manager: AuthenticatedUser) {
     const report = await this.prisma.report.findUnique({
       where: { id },
@@ -124,8 +109,7 @@ export class ReviewService {
         ? ReportStatus.APPROVED
         : ReportStatus.NEEDS_CORRECTION;
 
-    // Status change and comment land together: a report is never left approved
-    // with no record of who approved it, or commented on without moving.
+    // Status change and comment land together.
     await this.prisma.$transaction([
       this.prisma.reviewComment.create({
         data: {
@@ -138,7 +122,7 @@ export class ReviewService {
       }),
       this.prisma.report.update({
         where: { id: report.id },
-        // Only the status. Report CONTENT is never written on this path.
+        // Only the status.
         data: { status: nextStatus },
       }),
     ]);
@@ -146,21 +130,13 @@ export class ReviewService {
     return this.findTeamReport(id);
   }
 
-  /**
-   * Team overview: one row per member with their report counts and whether
-   * this week's report is in yet.
-   *
-   * Three queries rather than one per member: a findMany plus two grouped
-   * aggregates, stitched together in memory. That keeps it O(1) round trips as
-   * the team grows.
-   */
+  // Team overview: per-member report counts, plus whether this week's report has arrived.
   async findTeam() {
     const currentWeekStart = mondayOf();
 
     const [members, grouped, thisWeek] = await Promise.all([
       this.prisma.user.findMany({
-        // Deactivated people are no longer expected to report, so they leave
-        // the team view and the compliance denominator.
+        // Deactivated people are no longer expected to report.
         where: { role: Role.TEAM_MEMBER, isActive: true },
         select: { id: true, name: true, email: true, createdAt: true },
         orderBy: { name: 'asc' },
@@ -201,8 +177,7 @@ export class ReviewService {
           currentWeek: {
             reportId: current?.id ?? null,
             status: current?.status ?? null,
-            // "Submitted" means it has left the member's hands: a DRAFT sitting
-            // in their editor does not count as reported.
+            // "Submitted" means it has left the member's hands.
             hasSubmitted:
               current !== undefined && current.status !== ReportStatus.DRAFT,
           },

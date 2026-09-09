@@ -11,13 +11,7 @@ import {
   Min,
 } from 'class-validator';
 
-/**
- * Pagination and filtering for report lists.
- *
- * Query strings arrive as text, so @Type(() => Number) is required for the
- * numeric rules to see numbers. The global ValidationPipe runs with
- * transform: true, which is what applies it.
- */
+// Pagination and filtering for report lists.
 export class QueryReportsDto {
   @ApiPropertyOptional({ default: 1, minimum: 1 })
   @IsOptional()

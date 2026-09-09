@@ -19,21 +19,14 @@ import { SimpleList } from './simple-list';
 import { TaskRows } from './task-rows';
 import { useReportForm } from './use-report-form';
 
-/**
- * The weekly report form, used for both create and edit.
- *
- * Structure is fixed and identical for every user -- no per-user customisation,
- * as the brief requires. "Save draft" and "Submit" are distinct actions:
- * saving keeps the report editable, submitting freezes the content and hands it
- * to a manager, so submitting asks for confirmation.
- */
+// The weekly report form, used for both create and edit.
 export function ReportForm({
   projects,
   report,
   defaultWeek,
 }: {
   projects: Project[];
-  /** Present when editing; absent when creating. */
+  // Present when editing; absent when creating.
   report?: ReportDetail;
   defaultWeek?: string;
 }) {
@@ -74,8 +67,7 @@ export function ReportForm({
               id="weekStartDate"
               type="date"
               value={state.weekStartDate}
-              // Editing cannot move a report to another week: that is part of
-              // its identity and its unique constraint.
+              // Editing cannot move a report to another week.
               disabled={busy || isEditing}
               onChange={(event) => patch({ weekStartDate: event.target.value })}
               aria-invalid={Boolean(errors.weekStartDate)}

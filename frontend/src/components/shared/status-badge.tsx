@@ -3,12 +3,7 @@ import { cn } from '@/lib/utils';
 import { humanise } from '@/lib/format';
 import type { ReportStatus } from '@/lib/types';
 
-/**
- * The single source of truth for how a status looks.
- *
- * Colours are defined once here so DRAFT is the same grey on the member's
- * table, the manager's queue and the dashboard.
- */
+// The single source of truth for how a status looks.
 const STYLES: Record<ReportStatus, string> = {
   DRAFT: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
   SUBMITTED: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-900',

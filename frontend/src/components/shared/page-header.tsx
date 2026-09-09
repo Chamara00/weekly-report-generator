@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 interface PageHeaderProps {
   title: string;
   description?: string;
-  /** Actions rendered on the right, e.g. a "New report" button. */
+  // Actions rendered on the right, e.g.
   actions?: ReactNode;
 }
 

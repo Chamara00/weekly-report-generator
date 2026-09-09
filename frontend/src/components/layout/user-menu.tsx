@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { humanise } from '@/lib/format';
 import type { AuthUser } from '@/lib/types';
 
-/** Initials avatar; avoids shipping an image for something this small. */
+// Initials avatar; avoids shipping an image for something this small.
 function initials(name: string): string {
   return name
     .split(' ')

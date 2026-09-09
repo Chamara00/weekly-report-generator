@@ -23,7 +23,7 @@ const MANAGER: AuthenticatedUser = {
   role: Role.MANAGER,
 };
 
-/** Builds an ExecutionContext carrying the given user on the request. */
+// Builds an ExecutionContext carrying the given user on the request.
 function contextFor(user?: AuthenticatedUser): ExecutionContext {
   return {
     switchToHttp: () => ({ getRequest: () => ({ user }) }),
@@ -32,7 +32,7 @@ function contextFor(user?: AuthenticatedUser): ExecutionContext {
   } as unknown as ExecutionContext;
 }
 
-/** A Reflector that returns fixed metadata, standing in for route decorators. */
+// A Reflector that returns fixed metadata, standing in for route decorators.
 function reflectorWith(metadata: Record<string, unknown>): Reflector {
   return {
     getAllAndOverride: (key: string) => metadata[key],
@@ -86,9 +86,7 @@ describe('RolesGuard', () => {
 });
 
 describe('manager-only controllers', () => {
-  // These read the REAL metadata off the controller classes, so the assertion
-  // is about the shipped code rather than a fixture: if someone removes
-  // @Roles(Role.MANAGER) from a controller, this fails.
+  // These read the REAL metadata off the controller classes.
   const reflector = new Reflector();
 
   it.each([

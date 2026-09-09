@@ -33,9 +33,7 @@ describe('UsersService (manager administration)', () => {
     ...over,
   });
 
-  // ---------------------------------------------------------------------------
-  // Role assignment — the requirement this module exists for
-  // ---------------------------------------------------------------------------
+  // Role assignment — the requirement this module exists for.
 
   describe('updateRole', () => {
     it('promotes a team member to MANAGER', async () => {
@@ -104,9 +102,7 @@ describe('UsersService (manager administration)', () => {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Deactivation instead of deletion
-  // ---------------------------------------------------------------------------
+  // Deactivation instead of deletion.
 
   describe('setActive', () => {
     it('deactivates a member without touching their reports', async () => {
@@ -144,9 +140,7 @@ describe('UsersService (manager administration)', () => {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Hard delete is only for accounts with no history
-  // ---------------------------------------------------------------------------
+  // Hard delete is only for accounts with no history.
 
   describe('remove', () => {
     it('refuses to delete a user who has filed reports, naming the count', async () => {
@@ -187,9 +181,7 @@ describe('UsersService (manager administration)', () => {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // The password hash must never leave the service
-  // ---------------------------------------------------------------------------
+  // The password hash must never leave the service.
 
   describe('invite', () => {
     it('hashes the password and returns it once, never storing it in the clear', async () => {

@@ -8,19 +8,12 @@ import {
   WeekQueryDto,
 } from './dto/dashboard-query.dto';
 
-/**
- * Headline numbers and the cross-team section view.
- *
- * Counting happens in the database (count / groupBy), never by loading rows
- * into Node and reducing them: the database can answer a COUNT from an index
- * without materialising anything, while pulling every report over the wire to
- * call .length costs memory and time that grow with the table.
- */
+// Headline numbers and the cross-team section view.
 @Injectable()
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** The Monday to report on: the one asked for, else the current week. */
+  // The Monday to report on: the one asked for, else the current week.
   private resolveWeek(query: WeekQueryDto): { weekStart: Date; weekEnd: Date } {
     const weekStart = query.weekStart ? new Date(query.weekStart) : mondayOf();
     return { weekStart, weekEnd: weekEndFor(weekStart) };
@@ -37,8 +30,7 @@ export class DashboardService {
       needsCorrectionCount,
       openBlockersCount,
     ] = await this.prisma.$transaction([
-      // "Expected" = every ACTIVE team member. A deactivated account no longer
-      // owes a report, so counting it would depress compliance forever.
+      // "Expected" = every ACTIVE team member.
       this.prisma.user.count({
         where: { role: Role.TEAM_MEMBER, isActive: true },
       }),
@@ -46,7 +38,7 @@ export class DashboardService {
       // Started: a report row exists, whatever state it is in.
       this.prisma.report.count({ where: { weekStartDate: weekStart } }),
 
-      // Submitted: it has left the member's hands. A DRAFT has not.
+      // Submitted: it has left the member's hands.
       this.prisma.report.count({
         where: {
           weekStartDate: weekStart,
@@ -54,9 +46,7 @@ export class DashboardService {
         },
       }),
 
-      // LATE is defined as: the current version's submittedAt falls after the
-      // week's own weekEndDate (the Sunday). Reporting on a week after it has
-      // closed is late, however many revisions followed.
+      // LATE is defined as: the current version's submittedAt falls after the week's own weekEndDate.
       this.prisma.report.count({
         where: {
           weekStartDate: weekStart,
@@ -65,18 +55,12 @@ export class DashboardService {
         },
       }),
 
-      // Team-wide and across all weeks: anything currently sitting with its
-      // author for rework.
+      // Team-wide and across all weeks: anything currently sitting with its author for rework.
       this.prisma.report.count({
         where: { status: ReportStatus.NEEDS_CORRECTION },
       }),
 
-      // OPEN blockers only. A blocker is counted when it lives on the report's
-      // CURRENT version and that report is not yet APPROVED. A blocker on a
-      // superseded version is history -- the member already rewrote that
-      // version, so re-counting it would inflate the number with issues that
-      // no longer exist. Approved reports are finished, so their blockers are
-      // closed by definition.
+      // OPEN blockers only: on a report's CURRENT version, and only while it is not yet APPROVED.
       this.prisma.blocker.count({
         where: {
           reportVersion: {
@@ -103,13 +87,7 @@ export class DashboardService {
     };
   }
 
-  /**
-   * One week, one section, every member side by side.
-   *
-   * Driven from the User table with a left join onto that week's report, so a
-   * member who has not reported still appears -- with an empty item list rather
-   * than being silently missing from the comparison.
-   */
+  // One week, one section, every member side by side.
   async section(query: SectionQueryDto) {
     const { weekStart, weekEnd } = this.resolveWeek(query);
     const wantsBlockers = query.section === DashboardSection.BLOCKERS;
@@ -126,8 +104,7 @@ export class DashboardService {
             id: true,
             status: true,
             project: { select: { id: true, name: true } },
-            // Only the CURRENT version: the superseded ones describe problems
-            // that have already been rewritten.
+            // Only the CURRENT version: the superseded ones describe problems that have already been.
             currentVersion: {
               select: {
                 versionNumber: true,
@@ -144,9 +121,7 @@ export class DashboardService {
       },
     });
 
-    // The select above is conditional, so Prisma widens these to `any`. Both
-    // shapes carry a description plus one boolean flag, which is all this view
-    // needs, so they are narrowed to a common shape here.
+    // The select above is conditional, so Prisma widens these to `any`.
     type SectionRow = {
       description: string;
       isKeyIssue?: boolean;

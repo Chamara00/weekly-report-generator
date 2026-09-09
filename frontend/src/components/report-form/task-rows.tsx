@@ -10,13 +10,7 @@ import { TASK_PRIORITIES, TASK_STATUSES, type Task } from '@/lib/types';
 import { FieldError } from './field-error';
 import { emptyTask } from './use-report-form';
 
-/**
- * The dynamic task table.
- *
- * One card per task rather than a literal <table>: a task has eight fields, and
- * eight columns are unusable on a phone. This keeps every field labelled and
- * lets the grid reflow.
- */
+// The dynamic task table.
 export function TaskRows({
   tasks,
   errors,

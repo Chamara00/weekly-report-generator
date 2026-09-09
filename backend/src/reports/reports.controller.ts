@@ -27,14 +27,7 @@ import { QueryReportsDto } from './dto/query-reports.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { ReportsService } from './reports.service';
 
-/**
- * Thin by design: every method resolves the caller, hands the work to the
- * service and returns the result. Ownership and status rules live in the
- * service, because they depend on the row being touched rather than on the URL.
- *
- * @Roles(Role.TEAM_MEMBER) on the write routes is the outer gate; the service
- * repeats the check so the rule holds regardless of routing.
- */
+// Thin by design: every method resolves the caller.
 @ApiTags('reports')
 @ApiBearerAuth()
 @Controller('reports')

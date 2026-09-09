@@ -1,13 +1,7 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
-/**
- * The single PrismaClient for the whole application.
- *
- * Nest owns its lifecycle: one connection pool is opened when the app boots and
- * closed when it shuts down, instead of every service constructing its own
- * client (which would exhaust Neon's connection limit).
- */
+// The single PrismaClient for the whole application.
 @Injectable()
 export class PrismaService
   extends PrismaClient

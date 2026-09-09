@@ -17,8 +17,7 @@ export default function RegisterPage() {
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Mirrors RegisterDto on the backend. The server rules are authoritative;
-  // these exist to give immediate feedback without a round trip.
+  // Mirrors RegisterDto on the backend.
   function validate(): boolean {
     const next: Record<string, string> = {};
     if (!name.trim()) next.name = 'Enter your name';
@@ -35,8 +34,7 @@ export default function RegisterPage() {
 
     setSubmitting(true);
     try {
-      // Registration goes straight to Nest; the follow-up login is what sets
-      // the httpOnly cookie, so the new user lands signed in.
+      // Registration goes straight to Nest; the follow-up login is what sets the httpOnly cookie.
       await apiFetch<AuthResponse>('/auth/register', {
         method: 'POST',
         // No role is sent: self-registration always creates a TEAM_MEMBER.

@@ -6,8 +6,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // The Next.js app sends the JWT in an httpOnly cookie, so the browser must be
-  // allowed to attach credentials to cross-origin requests.
+  // The Next.js app sends the JWT in an httpOnly cookie.
   app.enableCors({
     origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
     credentials: true,

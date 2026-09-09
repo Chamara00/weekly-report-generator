@@ -11,17 +11,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
   imports: [
     UsersModule,
     PassportModule,
-    // registerAsync because the secret comes from ConfigService, which is only
-    // available once the module has been resolved.
+    // registerAsync because the secret comes from ConfigService.
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret: config.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          // jsonwebtoken types expiresIn as a template literal union ('1d',
-          // '2h', ...), which a plain string from env cannot satisfy. The value
-          // is validated by jsonwebtoken at sign time.
+          // jsonwebtoken types expiresIn as a template literal union ('1d', '2h', ...).
           expiresIn: config.get<string>(
             'JWT_EXPIRES_IN',
             '1d',

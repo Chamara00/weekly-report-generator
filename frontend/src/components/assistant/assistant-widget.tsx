@@ -20,13 +20,7 @@ const SUGGESTIONS = [
   'Where did the time go last month?',
 ];
 
-/**
- * Floating chat widget, rendered only for managers (see the app layout).
- *
- * Conversation state lives here, in the client, and the whole history is sent
- * with each question — the backend is stateless, which keeps the API simple and
- * means no conversation is ever persisted to the database.
- */
+// Floating chat widget, rendered only for managers (see the app layout).
 export function AssistantWidget() {
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<Turn[]>([]);

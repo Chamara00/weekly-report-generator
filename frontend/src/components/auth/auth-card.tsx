@@ -17,7 +17,7 @@ interface AuthCardProps {
   children: ReactNode;
 }
 
-/** Shared chrome for the login and register screens. */
+// Shared chrome for the login and register screens.
 export function AuthCard({
   title,
   description,

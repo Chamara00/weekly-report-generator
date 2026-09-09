@@ -37,8 +37,7 @@ export class AuthService {
       email: dto.email,
       passwordHash,
       name: dto.name,
-      // Hard-coded, never taken from the request: public registration must not
-      // be able to create a MANAGER. See the note on RegisterDto.
+      // Hard-coded, never taken from the request.
       role: Role.TEAM_MEMBER,
     });
 
@@ -49,8 +48,7 @@ export class AuthService {
     // The only place the password hash is ever loaded.
     const user = await this.usersService.findByEmailWithPassword(dto.email);
 
-    // One generic message for "no such email" and "wrong password" alike, so
-    // the endpoint cannot be used to discover which emails are registered.
+    // One generic message for "no such email" and "wrong password" alike.
     const passwordMatches =
       user !== null && (await bcrypt.compare(dto.password, user.passwordHash));
 
@@ -58,9 +56,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    // A deactivated account is refused with the SAME message as bad
-    // credentials: telling someone "your account is disabled" confirms the
-    // email exists, which is exactly what the generic message avoids.
+    // A deactivated account is refused with the SAME message as bad credentials.
     if (!user.isActive) {
       throw new UnauthorizedException('Invalid email or password');
     }
@@ -86,8 +82,7 @@ export class AuthService {
       name: user.name,
     };
 
-    // expiresIn is not passed here: JwtModule.registerAsync already applies
-    // JWT_EXPIRES_IN as the default sign option for this service.
+    // expiresIn comes from JwtModule.registerAsync (JWT_EXPIRES_IN), so it is not repeated here.
     return this.jwtService.sign(payload);
   }
 }

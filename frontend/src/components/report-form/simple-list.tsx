@@ -5,11 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FieldError } from './field-error';
 
-/**
- * A plain list of text rows: next week's planned tasks, and the links list.
- * No flag, no extra fields -- kept separate from FlaggedList so neither grows
- * conditionals for the other's behaviour.
- */
+// A plain list of text rows: next week's planned tasks, and the links list.
 export function SimpleList({
   legend,
   description,

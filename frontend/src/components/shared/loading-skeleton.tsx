@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-/** Placeholder rows for a table while its server component streams in. */
+// Placeholder rows for a table while its server component streams in.
 export function TableSkeleton({ rows = 5, columns = 5 }: { rows?: number; columns?: number }) {
   return (
     <div className="rounded-lg border">
@@ -20,7 +20,7 @@ export function TableSkeleton({ rows = 5, columns = 5 }: { rows?: number; column
   );
 }
 
-/** Placeholder for a grid of stat cards. */
+// Placeholder for a grid of stat cards.
 export function CardsSkeleton({ count = 4 }: { count?: number }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

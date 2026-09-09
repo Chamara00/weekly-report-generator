@@ -15,10 +15,7 @@ export class CreateProjectDto {
   description?: string;
 }
 
-/**
- * Written out rather than built with PartialType so both fields carry their own
- * rules explicitly -- a name that is present must still be non-empty.
- */
+// Written out rather than built with PartialType so both fields carry their own rules explicitly.
 export class UpdateProjectDto {
   @ApiPropertyOptional({ example: 'Client A (Phase 2)' })
   @IsOptional()

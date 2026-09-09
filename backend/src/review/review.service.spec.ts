@@ -29,7 +29,7 @@ describe('ReviewService.review', () => {
     status: ReportStatus,
     currentVersionId: string | null = 'v2',
   ) {
-    // First call: the status check. Second: findTeamReport() for the response.
+    // First call: the status check.
     prisma.report.findUnique
       .mockResolvedValueOnce({ id: 'report-1', status, currentVersionId })
       .mockResolvedValue({ id: 'report-1', status });
@@ -43,8 +43,7 @@ describe('ReviewService.review', () => {
     expect(prisma.reviewComment.create).toHaveBeenCalledWith({
       data: {
         reportId: 'report-1',
-        // The comment points at the version the manager was reading, which is
-        // what keeps the trail meaningful after the member creates v3.
+        // The comment points at the version the manager was reading.
         reportVersionId: 'v2',
         managerId: MANAGER.id,
         comment: '',
