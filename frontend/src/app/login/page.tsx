@@ -6,9 +6,15 @@ export const metadata = { title: 'Sign in' };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ expired?: string }>;
+  searchParams: Promise<{ reason?: string; expired?: string }>;
 }) {
-  const { expired } = await searchParams;
+  const { reason, expired } = await searchParams;
+  const notice =
+    reason === 'role'
+      ? 'Your role was updated. Please sign in again to continue.'
+      : reason === 'expired' || expired === '1'
+        ? 'Your session has ended. Please sign in again.'
+        : null;
 
-  return <LoginForm expired={expired === '1'} />;
+  return <LoginForm notice={notice} />;
 }

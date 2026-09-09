@@ -16,16 +16,20 @@ export function SidebarNav({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const items = navItemsFor(role);
+
+  // Exactly one item is active: the LONGEST href the current path sits under.
+  // A plain "startsWith" would light up /manager as well as /manager/users,
+  // and /reports as well as /reports/new.
+  const activeHref = items
+    .map((item) => item.href)
+    .filter((href) => pathname === href || pathname.startsWith(`${href}/`))
+    .sort((a, b) => b.length - a.length)[0];
 
   return (
     <nav className="flex flex-col gap-1" aria-label="Main">
-      {navItemsFor(role).map((item) => {
-        // "/reports/new" must not light up "/reports".
-        const isActive =
-          pathname === item.href ||
-          (item.href !== '/reports/new' &&
-            pathname.startsWith(`${item.href}/`) &&
-            !pathname.startsWith('/reports/new'));
+      {items.map((item) => {
+        const isActive = item.href === activeHref;
 
         return (
           <Link

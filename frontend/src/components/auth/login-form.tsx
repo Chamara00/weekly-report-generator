@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { homePathForRole } from '@/lib/auth-cookie';
 import type { AuthUser } from '@/lib/api';
 
-export function LoginForm({ expired = false }: { expired?: boolean }) {
+export function LoginForm({ notice }: { notice?: string | null }) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -63,11 +63,9 @@ export function LoginForm({ expired = false }: { expired?: boolean }) {
       footerHref="/register"
     >
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-        {expired && !formError ? (
+        {notice && !formError ? (
           <Alert>
-            <AlertDescription>
-              Your session has ended. Please sign in again.
-            </AlertDescription>
+            <AlertDescription>{notice}</AlertDescription>
           </Alert>
         ) : null}
 
