@@ -159,7 +159,9 @@ export class ReviewService {
 
     const [members, grouped, thisWeek] = await Promise.all([
       this.prisma.user.findMany({
-        where: { role: Role.TEAM_MEMBER },
+        // Deactivated people are no longer expected to report, so they leave
+        // the team view and the compliance denominator.
+        where: { role: Role.TEAM_MEMBER, isActive: true },
         select: { id: true, name: true, email: true, createdAt: true },
         orderBy: { name: 'asc' },
       }),

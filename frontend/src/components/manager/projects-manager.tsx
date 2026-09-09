@@ -15,7 +15,7 @@ import {
   deleteProject,
   updateProject,
 } from '@/lib/client-api';
-import type { Project } from '@/lib/types';
+import type { Project, TeamMemberStats } from '@/lib/types';
 import { ProjectRow } from './project-row';
 
 /**
@@ -25,7 +25,13 @@ import { ProjectRow } from './project-row';
  * the backend answers 409 with the exact report count -- surfacing "3 report(s)
  * are filed against it" is far more useful than "could not delete".
  */
-export function ProjectsManager({ projects }: { projects: Project[] }) {
+export function ProjectsManager({
+  projects,
+  team,
+}: {
+  projects: Project[];
+  team: TeamMemberStats[];
+}) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -147,9 +153,11 @@ export function ProjectsManager({ projects }: { projects: Project[] }) {
             <ProjectRow
               key={project.id}
               project={project}
+              team={team}
               busy={busy}
               onSave={handleSave}
               onDelete={handleDelete}
+              onError={setError}
             />
           ))}
         </div>

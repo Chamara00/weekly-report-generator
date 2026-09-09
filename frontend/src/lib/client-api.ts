@@ -1,7 +1,14 @@
 'use client';
 
 import { ApiError } from './api';
-import type { Project, ReportDetail, ReportPayload } from './types';
+import type {
+  InviteResult,
+  ManagedUser,
+  Project,
+  ReportDetail,
+  ReportPayload,
+  Role,
+} from './types';
 
 /**
  * Client-side mutations, routed through /api/proxy so the httpOnly cookie can
@@ -112,4 +119,60 @@ export function deleteProject(id: string): Promise<{ id: string; deleted: boolea
   return proxy<{ id: string; deleted: boolean }>(`/projects/${id}`, {
     method: 'DELETE',
   });
+}
+
+// ---------------------------------------------------------------------------
+// User administration
+// ---------------------------------------------------------------------------
+
+export function inviteUser(body: {
+  email: string;
+  name: string;
+  role: Role;
+  password?: string;
+}): Promise<InviteResult> {
+  return proxy<InviteResult>('/users', { method: 'POST', body });
+}
+
+export function updateUserRole(id: string, role: Role): Promise<ManagedUser> {
+  return proxy<ManagedUser>(`/users/${id}/role`, { method: 'PATCH', body: { role } });
+}
+
+export function setUserActive(id: string, isActive: boolean): Promise<ManagedUser> {
+  return proxy<ManagedUser>(`/users/${id}/active`, {
+    method: 'PATCH',
+    body: { isActive },
+  });
+}
+
+export function deleteUser(id: string): Promise<{ id: string; deleted: boolean }> {
+  return proxy<{ id: string; deleted: boolean }>(`/users/${id}`, { method: 'DELETE' });
+}
+
+export function addProjectMember(projectId: string, userId: string): Promise<Project> {
+  return proxy<Project>(`/projects/${projectId}/members`, {
+    method: 'POST',
+    body: { userId },
+  });
+}
+
+export function removeProjectMember(projectId: string, userId: string): Promise<Project> {
+  return proxy<Project>(`/projects/${projectId}/members/${userId}`, { method: 'DELETE' });
+}
+
+// ---------------------------------------------------------------------------
+// AI assistant
+// ---------------------------------------------------------------------------
+
+export interface AssistantReply {
+  answer: string;
+  toolsUsed: string[];
+  model: string;
+}
+
+export function askAssistant(body: {
+  message: string;
+  history: { role: 'user' | 'model'; text: string }[];
+}): Promise<AssistantReply> {
+  return proxy<AssistantReply>('/manager/assistant/chat', { method: 'POST', body });
 }

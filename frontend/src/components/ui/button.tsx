@@ -1,3 +1,4 @@
+import * as React from "react"
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
@@ -43,12 +44,28 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  nativeButton,
+  render,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  // Base UI assumes it renders a real <button> (nativeButton defaults to true).
+  // We frequently pass render={<Link />}, which is an <a> -- claiming native
+  // button semantics on it is wrong for forms and assistive tech, and Base UI
+  // warns about it. So infer the truth: native only when nothing is rendered in
+  // its place, or when what is rendered is itself a <button>. An explicit
+  // nativeButton prop still wins.
+  const rendersNativeButton =
+    nativeButton ??
+    (render === undefined
+      ? true
+      : React.isValidElement(render) && render.type === "button")
+
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      nativeButton={rendersNativeButton}
+      render={render}
       {...props}
     />
   )

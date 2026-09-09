@@ -37,8 +37,11 @@ export class DashboardService {
       needsCorrectionCount,
       openBlockersCount,
     ] = await this.prisma.$transaction([
-      // "Expected" = everyone who owes a report.
-      this.prisma.user.count({ where: { role: Role.TEAM_MEMBER } }),
+      // "Expected" = every ACTIVE team member. A deactivated account no longer
+      // owes a report, so counting it would depress compliance forever.
+      this.prisma.user.count({
+        where: { role: Role.TEAM_MEMBER, isActive: true },
+      }),
 
       // Started: a report row exists, whatever state it is in.
       this.prisma.report.count({ where: { weekStartDate: weekStart } }),
@@ -112,7 +115,7 @@ export class DashboardService {
     const wantsBlockers = query.section === DashboardSection.BLOCKERS;
 
     const members = await this.prisma.user.findMany({
-      where: { role: Role.TEAM_MEMBER },
+      where: { role: Role.TEAM_MEMBER, isActive: true },
       orderBy: { name: 'asc' },
       select: {
         id: true,

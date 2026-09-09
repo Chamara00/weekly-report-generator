@@ -36,6 +36,7 @@ DRAFT ──▶ SUBMITTED ──▶ APPROVED
 | Styling | **Tailwind + shadcn/ui** | Consistent primitives without hand-rolling a design system. |
 | Charts | **Recharts** | Composable React charts; the API returns chart-ready aggregates. |
 | Tests | **Jest** | Nest's default; the access-control rules are unit-testable against a mocked Prisma client. |
+| AI | **Google Gemini** (`@google/genai`) | Function calling lets the assistant reuse the existing services as tools rather than getting its own path to the data. Optional — the app runs fine without a key. |
 
 ## Architecture overview
 
@@ -97,6 +98,8 @@ cp frontend/.env.example frontend/.env.local
 | `JWT_EXPIRES_IN` | Token lifetime, e.g. `1d` |
 | `FRONTEND_URL` | Origin allowed by CORS, e.g. `http://localhost:3000` |
 | `PORT` | API port, default `3001` |
+| `GEMINI_API_KEY` | **Optional.** Enables the AI assistant. Free key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey). Leave blank and the widget is simply hidden. |
+| `GEMINI_MODEL` | **Optional.** Defaults to `gemini-2.5-flash`. |
 
 **`frontend/.env.local`** — see [frontend/.env.example](frontend/.env.example):
 
@@ -188,8 +191,9 @@ team members on `/dashboard`.
 
 ```bash
 cd backend
-npm test                      # 42 tests: role-based access control, ownership,
-                              # the status state machine, review validation
+npm test                      # 55 tests: role-based access control, ownership,
+                              # the status state machine, review validation and
+                              # user administration
 npm run test:cov              # with coverage
 ```
 
@@ -209,9 +213,30 @@ With the backend running, Swagger UI is at:
 Use the **Authorize** button to paste a token from `POST /auth/login` and the
 protected endpoints become callable from the page.
 
+## Features
+
+**Team member** — dashboard with this week's status and a correction callout,
+report history with filters, the weekly report form (create/edit, draft vs
+submit), and a read-only report view with version history.
+
+**Manager** — analytics dashboard (four metrics, four Recharts visuals, activity
+feed), review queue with combinable filters, review page (approve / request
+changes), team list and per-member profiles, project CRUD with member
+assignment, cross-team week view, and user management.
+
+**AI assistant** (optional) — a manager-only chat widget. Ask *"what is blocking
+the team this week?"*, *"who hasn't submitted?"*, *"is anyone overloaded?"*. It
+answers with Gemini function calling over the same services the dashboard uses,
+so its numbers always match the UI. Hidden entirely when `GEMINI_API_KEY` is
+unset.
+
 ## Notes
 
-- Public registration always creates a **TEAM_MEMBER**. Managers are created by
-  the seed (an admin user-management screen would be the next addition).
+- Public registration always creates a **TEAM_MEMBER**. Roles are assigned by a
+  manager on **/manager/users** — that is the only way a MANAGER is created.
+- Removing a team member **deactivates** them rather than deleting: `User →
+  Report` cascades, so a hard delete would destroy their reporting history.
+  Deactivation blocks login immediately (existing tokens included) and keeps
+  every report. Hard delete is allowed only for an account that has filed nothing.
 - `/settings` is read-only: the API has no profile-update endpoint yet.
 - The ER diagram is provided as an image in the submission's Drive folder.

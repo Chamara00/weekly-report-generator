@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 /**
@@ -7,6 +8,7 @@ import { UsersService } from './users.service';
  * that knows how a user is read or written.
  */
 @Module({
+  controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
 })

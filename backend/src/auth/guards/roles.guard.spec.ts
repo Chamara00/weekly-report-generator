@@ -6,6 +6,7 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { ReviewController } from '../../review/review.controller';
 import { DashboardController } from '../../dashboard/dashboard.controller';
+import { UsersController } from '../../users/users.controller';
 import type { AuthenticatedUser } from '../types/authenticated-user.type';
 
 const MEMBER: AuthenticatedUser = {
@@ -93,6 +94,7 @@ describe('manager-only controllers', () => {
   it.each([
     ['ReviewController (/manager/*)', ReviewController],
     ['DashboardController (/manager/dashboard/*)', DashboardController],
+    ['UsersController (/users/*)', UsersController],
   ])('%s is restricted to MANAGER', (_label, controller) => {
     const roles = reflector.get<Role[]>(ROLES_KEY, controller);
 
@@ -100,7 +102,11 @@ describe('manager-only controllers', () => {
   });
 
   it('a TEAM_MEMBER is denied on every manager controller', () => {
-    for (const controller of [ReviewController, DashboardController]) {
+    for (const controller of [
+      ReviewController,
+      DashboardController,
+      UsersController,
+    ]) {
       const roles = reflector.get<Role[]>(ROLES_KEY, controller);
       const guard = new RolesGuard(reflectorWith({ [ROLES_KEY]: roles }));
 

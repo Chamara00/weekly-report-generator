@@ -9,7 +9,14 @@ import type { PrismaService } from '../prisma/prisma.service';
  * a DRAFT calls reportVersion.update and NOT reportVersion.create.
  */
 export interface MockPrisma {
-  user: { count: jest.Mock; findMany: jest.Mock; findUnique: jest.Mock };
+  user: {
+    count: jest.Mock;
+    findMany: jest.Mock;
+    findUnique: jest.Mock;
+    create: jest.Mock;
+    update: jest.Mock;
+    delete: jest.Mock;
+  };
   report: {
     findUnique: jest.Mock;
     findUniqueOrThrow: jest.Mock;
@@ -32,7 +39,14 @@ export interface MockPrisma {
 
 export function createMockPrisma(): MockPrisma {
   const mock: MockPrisma = {
-    user: { count: jest.fn(), findMany: jest.fn(), findUnique: jest.fn() },
+    user: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
     report: {
       findUnique: jest.fn(),
       findUniqueOrThrow: jest.fn(),

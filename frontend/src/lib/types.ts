@@ -57,6 +57,8 @@ export interface Project {
   name: string;
   description: string | null;
   _count?: { reports: number; members: number };
+  /** Present on GET /projects/:id, absent on the list endpoint. */
+  members?: { user: { id: string; name: string; email: string; role: Role } }[];
 }
 
 export interface Task {
@@ -264,4 +266,25 @@ export interface SectionView {
     versionNumber: number | null;
     items: { description: string; isKey: boolean }[];
   }[];
+}
+
+// ---------------------------------------------------------------------------
+// User administration (manager-only)
+// ---------------------------------------------------------------------------
+
+export interface ManagedUser {
+  id: string;
+  email: string;
+  name: string;
+  role: Role;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  _count: { reports: number };
+}
+
+export interface InviteResult {
+  user: ManagedUser;
+  /** Shown once so the manager can pass it on; never retrievable again. */
+  temporaryPassword: string;
 }

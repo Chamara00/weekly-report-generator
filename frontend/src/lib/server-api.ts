@@ -7,12 +7,14 @@ import type {
   AuthUser,
   DashboardCharts,
   DashboardSummary,
+  ManagedUser,
   Paginated,
   Project,
   ReportDetail,
   ReportListItem,
   ReportQuery,
   ReportVersion,
+  Role,
   SectionView,
   TeamOverview,
 } from './types';
@@ -136,4 +138,32 @@ export function getSectionView(query: {
   return serverFetch<SectionView>(
     `/manager/dashboard/section${toQueryString(query)}`,
   );
+}
+
+export function getUsers(query: {
+  page?: number;
+  limit?: number;
+  role?: string;
+  search?: string;
+}): Promise<Paginated<ManagedUser>> {
+  return serverFetch<Paginated<ManagedUser>>(`/users${toQueryString(query)}`);
+}
+
+/** One project including its assigned members. */
+export function getProject(id: string): Promise<
+  Project & { members: { user: { id: string; name: string; email: string; role: Role } }[] }
+> {
+  return serverFetch<
+    Project & { members: { user: { id: string; name: string; email: string; role: Role } }[] }
+  >(`/projects/${id}`);
+}
+
+/** Whether the backend has a Gemini key, so the UI can hide the widget. */
+export async function getAssistantStatus(): Promise<{ configured: boolean }> {
+  try {
+    return await serverFetch<{ configured: boolean }>('/manager/assistant/status');
+  } catch {
+    // Never let a missing/unreachable assistant break the app shell.
+    return { configured: false };
+  }
 }

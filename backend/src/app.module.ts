@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AssistantModule } from './assistant/assistant.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -24,6 +25,7 @@ import { UsersModule } from './users/users.module';
     ReviewModule,
     DashboardModule,
     ProjectsModule,
+    AssistantModule,
   ],
   controllers: [AppController],
   providers: [

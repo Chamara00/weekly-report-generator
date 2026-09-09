@@ -11,5 +11,9 @@ import { DashboardService } from './dashboard.service';
     DashboardChartsService,
     DashboardActivityService,
   ],
+  // Exported for AssistantModule: the AI tools call these same services rather
+  // than querying the database themselves, so the assistant and the dashboard
+  // can never disagree about a number.
+  exports: [DashboardService, DashboardChartsService],
 })
 export class DashboardModule {}

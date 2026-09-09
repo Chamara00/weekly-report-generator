@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
-import type { Project } from '@/lib/types';
+import { ProjectMembers } from './project-members';
+import type { Project, TeamMemberStats } from '@/lib/types';
 
 /**
  * One project row, which flips between reading and editing IN PLACE.
@@ -16,14 +17,18 @@ import type { Project } from '@/lib/types';
  */
 export function ProjectRow({
   project,
+  team,
   busy,
   onSave,
   onDelete,
+  onError,
 }: {
   project: Project;
+  team: TeamMemberStats[];
   busy: boolean;
   onSave: (id: string, values: { name: string; description: string }) => Promise<boolean>;
   onDelete: (id: string) => Promise<void>;
+  onError: (message: string) => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(project.name);
@@ -75,7 +80,8 @@ export function ProjectRow({
   }
 
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 rounded-lg border p-4">
+    <div className="rounded-lg border p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
       <div className="min-w-0 flex-1">
         <p className="font-medium">{project.name}</p>
         {project.description ? (
@@ -109,6 +115,9 @@ export function ProjectRow({
           onConfirm={() => onDelete(project.id)}
         />
       </div>
+      </div>
+
+      <ProjectMembers project={project} team={team} onError={onError} />
     </div>
   );
 }

@@ -58,11 +58,19 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    // A deactivated account is refused with the SAME message as bad
+    // credentials: telling someone "your account is disabled" confirms the
+    // email exists, which is exactly what the generic message avoids.
+    if (!user.isActive) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
     const safeUser: SafeUser = {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
+      isActive: user.isActive,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

@@ -73,14 +73,22 @@ model User {
   passwordHash String
   name         String
   role         Role     @default(TEAM_MEMBER)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+
+  /// Soft delete. Removing a person from the team must not delete the weeks
+  /// they reported: User -> Report cascades, so a hard delete would destroy
+  /// their history. Deactivating blocks login and hides them from team lists
+  /// while every report they filed stays readable.
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   reports        Report[]
   reviewComments ReviewComment[] @relation("ReviewCommentManager")
   projectMembers ProjectMember[]
 
   @@index([role])
+  @@index([isActive])
 }
 
 model Project {

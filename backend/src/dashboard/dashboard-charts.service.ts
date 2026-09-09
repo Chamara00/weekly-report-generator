@@ -82,7 +82,7 @@ export class DashboardChartsService {
           ON r."userId" = u."id"
          AND r."weekStartDate" BETWEEN ${iso(from)}::date AND ${iso(weekStart)}::date
          ${filters}
-        WHERE u."role" = 'TEAM_MEMBER'::"Role"
+        WHERE u."role" = 'TEAM_MEMBER'::"Role" AND u."isActive" = true
         GROUP BY 1, 2, 3
       `),
 
@@ -208,5 +208,54 @@ export class DashboardChartsService {
       taskType,
       hours: rows.find((row) => row.taskType === taskType)?.hours ?? 0,
     }));
+  }
+
+  /**
+   * Planned vs actually-spent hours per member over recent weeks.
+   *
+   * This is the "who is overloaded?" query. Same current-version join rule as
+   * every other aggregate here: a revised report must not have its hours
+   * counted once per version.
+   */
+  async memberWorkload(weeks = 6) {
+    const from = new Date(mondayOf().getTime() - (weeks - 1) * 7 * DAY_MS);
+
+    const rows = await this.prisma.$queryRaw<
+      {
+        userId: string;
+        name: string;
+        hoursPlanned: number;
+        hoursSpent: number;
+        completedTasks: number;
+      }[]
+    >(Prisma.sql`
+      SELECT u."id"   AS "userId",
+             u."name" AS "name",
+             COALESCE(SUM(t."hoursPlanned"), 0)::float8 AS "hoursPlanned",
+             COALESCE(SUM(t."hoursSpent"), 0)::float8   AS "hoursSpent",
+             COUNT(t."id") FILTER (WHERE t."status" = 'COMPLETED'::"TaskStatus")::int
+               AS "completedTasks"
+      FROM "User" u
+      LEFT JOIN "Report" r
+        ON r."userId" = u."id"
+       AND r."weekStartDate" >= ${iso(from)}::date
+      LEFT JOIN "ReportVersion" v ON v."id" = r."currentVersionId"
+      LEFT JOIN "Task" t ON t."reportVersionId" = v."id"
+      WHERE u."role" = 'TEAM_MEMBER'::"Role" AND u."isActive" = true
+      GROUP BY 1, 2
+      ORDER BY "hoursSpent" DESC
+    `);
+
+    return {
+      sinceWeek: iso(from),
+      members: rows.map((row) => ({
+        ...row,
+        // >1 means they spent more than they planned.
+        overloadRatio:
+          row.hoursPlanned > 0
+            ? Number((row.hoursSpent / row.hoursPlanned).toFixed(2))
+            : null,
+      })),
+    };
   }
 }

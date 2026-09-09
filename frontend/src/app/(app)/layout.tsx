@@ -4,7 +4,8 @@ import { MobileNav } from '@/components/layout/mobile-nav';
 import { SidebarNav } from '@/components/layout/sidebar-nav';
 import { UserMenu } from '@/components/layout/user-menu';
 import { Toaster } from '@/components/ui/sonner';
-import { getCurrentUser } from '@/lib/server-api';
+import { AssistantWidget } from '@/components/assistant/assistant-widget';
+import { getAssistantStatus, getCurrentUser } from '@/lib/server-api';
 
 /**
  * The signed-in shell: persistent sidebar from `md` up, drawer below it.
@@ -23,8 +24,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   try {
     user = await getCurrentUser();
   } catch {
-    redirect('/login');
+    // The cookie exists but the API rejected it (expired, revoked, or the user
+    // was deleted/deactivated). Middleware cannot tell -- it only decodes the
+    // token -- so the cookie must be cleared here or the two bounce forever.
+    redirect('/api/auth/clear');
   }
+
+  // Managers only, and only when a Gemini key is configured — otherwise the
+  // widget would offer a feature that can only fail.
+  const assistant =
+    user.role === 'MANAGER' ? await getAssistantStatus() : { configured: false };
 
   return (
     <div className="bg-muted/20 min-h-svh">
@@ -47,6 +56,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <div className="mx-auto max-w-6xl">{children}</div>
         </main>
       </div>
+
+      {assistant.configured ? <AssistantWidget /> : null}
 
       {/* Mounted once here so review actions and project CRUD can confirm
           themselves from anywhere in the signed-in app. */}
