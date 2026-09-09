@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AUTH_COOKIE } from '@/lib/auth-cookie';
 
 // Authenticated pass-through to the Nest API for CLIENT components.
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:3001';
 
 async function forward(request: NextRequest, path: string[]) {
   const token = request.cookies.get(AUTH_COOKIE)?.value;

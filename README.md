@@ -109,7 +109,7 @@ GEMINI_MODEL="gemini-2.5-flash"
 **Create `frontend/.env.local`:**
 
 ```ini
-NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_API_URL=http://127.0.0.1:3001
 ```
 
 | Variable | What it is |
