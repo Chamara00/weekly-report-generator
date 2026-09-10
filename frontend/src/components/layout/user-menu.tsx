@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -43,13 +44,15 @@ export function UserMenu({ user }: { user: AuthUser }) {
           <span className="hidden text-sm font-medium sm:inline">{user.name}</span>
         </Button>} />
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>
-          <p className="font-medium">{user.name}</p>
-          <p className="text-muted-foreground text-xs font-normal">{user.email}</p>
-          <p className="text-muted-foreground text-xs font-normal">
-            {humanise(user.role)}
-          </p>
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <p className="font-medium">{user.name}</p>
+            <p className="text-muted-foreground text-xs font-normal">{user.email}</p>
+            <p className="text-muted-foreground text-xs font-normal">
+              {humanise(user.role)}
+            </p>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/settings" />}>Settings</DropdownMenuItem>
         <DropdownMenuItem onClick={signOut}>Sign out</DropdownMenuItem>
